@@ -1,14 +1,14 @@
 #[cfg(feature = "restrait")]
 use crate::traits::ResTrait;
 
-use super::{DirItem, V1Error};
-#[cfg(feature = "serde-any")]
+use super::V1Error;
+#[cfg(feature = "res-serde-any")]
 use serde::*;
 use std::collections::HashMap;
 
-#[cfg_attr(feature = "ser", derive(Serialize))]
-#[cfg_attr(feature = "de", derive(Deserialize))]
-#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
+#[cfg_attr(feature = "res-ser", derive(Serialize))]
+#[cfg_attr(feature = "res-de", derive(Deserialize))]
+#[cfg_attr(feature = "res-serde-any", serde(tag = "type"))]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone)]
 pub enum V1Response {
@@ -32,7 +32,7 @@ pub enum V1Response {
     #[cfg_attr(feature = "serde-any", serde(rename = "overwritten"))]
     Overwritten { path: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "dir content"))]
-    DirContent(HashMap<String, DirItem>),
+    DirContent(HashMap<String, V1DirItem>),
     #[cfg_attr(feature = "serde-any", serde(rename = "visibility changed"))]
     VisibilityChanged,
     #[cfg_attr(feature = "serde-any", serde(rename = "file item created"))]
@@ -57,4 +57,36 @@ impl ResTrait for V1Response {
     fn error(e: <Self as ResTrait>::Error) -> Self {
         Self::Error { kind: e }
     }
+}
+
+#[cfg_attr(feature = "res-ser", derive(Serialize))]
+#[cfg_attr(feature = "res-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1DirItem {
+    pub visibility: V1Visibility,
+    pub is_file: bool,
+    pub name: String,
+}
+
+#[cfg_attr(feature = "res-ser", derive(Serialize))]
+#[cfg_attr(feature = "res-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone, Copy)]
+pub struct V1Visibility {
+    pub inherited: bool,
+    pub visibility: ItemVisibility,
+}
+
+#[cfg_attr(feature = "res-ser", derive(Serialize))]
+#[cfg_attr(feature = "res-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone, Copy)]
+pub enum ItemVisibility {
+    #[serde(rename = "hidden")]
+    Hidden,
+    #[serde(rename = "public")]
+    Public,
+    #[serde(rename = "private")]
+    Private,
 }

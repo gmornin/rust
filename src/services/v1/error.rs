@@ -1,53 +1,53 @@
-use std::{error::Error, fmt::Display};
+use std::{error::Error, fmt::{Display, self}};
 
-#[cfg(feature = "serde-any")]
+#[cfg(feature = "res-serde-any")]
 use serde::*;
 
 #[cfg(feature = "restrait")]
 use crate::traits::ErrorTrait;
 
-#[cfg_attr(feature = "ser", derive(Serialize))]
-#[cfg_attr(feature = "de", derive(Deserialize))]
+#[cfg_attr(feature = "res-ser", derive(Serialize))]
+#[cfg_attr(feature = "res-de", derive(Deserialize))]
 #[derive(Clone, Debug)]
 pub enum V1Error {
     // accounts
-    #[serde(rename = "username taken")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "username taken"))]
     UsernameTaken,
-    #[serde(rename = "email taken")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "email taken"))]
     EmailTaken,
-    #[serde(rename = "no such user")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "no such user"))]
     NoSuchUser,
-    #[serde(rename = "password incorrect")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "password incorrect"))]
     PasswordIncorrect,
-    #[serde(rename = "invalid token")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "invalid token"))]
     InvalidToken,
 
     // triggers
-    #[serde(rename = "email mismatch")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "email mismatch"))]
     EmailMismatch,
-    #[serde(rename = "trigger not found")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "trigger not found"))]
     TriggerNotFound,
 
     // storage
-    #[serde(rename = "path occupied")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "path occupied"))]
     PathOccupied,
-    #[serde(rename = "file not found")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "file not found"))]
     FileNotFound,
-    #[serde(rename = "filesystem error")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "filesystem error"))]
     FsError { content: String },
-    #[serde(rename = "file too large")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "file too large"))]
     FileTooLarge,
-    #[serde(rename = "no parent")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "no parent"))]
     NoParent,
-    #[serde(rename = "not editable")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "not editable"))]
     NotEditable,
 
-    #[serde(rename = "external")]
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "external"))]
     External { content: String },
 }
 
 impl Display for V1Error {
-    fn fmt(&self, f: &mut __private::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("{self:?}"))
     }
 }

@@ -9,11 +9,18 @@ edition = "2021"
 serde = { version = "1", features = ["derive"]}
 
 [features]
+default = ["debug", "services-v1", "res-serde", "restrait", "req-serde"]
 debug = []
-serde = ["ser", "de"]
-ser = ["serde-any"]
-de = ["serde-any"]
-serde-any = []
+
+res-serde = ["res-ser", "res-de"]
+res-ser = ["res-serde-any"]
+res-de = ["res-serde-any"]
+res-serde-any = []
+
+req-serde = ["req-ser", "req-de"]
+req-ser = ["req-serde-any"]
+req-de = ["req-serde-any"]
+req-serde-any = []
 
 services-v1 = []
 
