@@ -17,8 +17,8 @@ pub enum V1Response {
     Created { id: String, token: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "deleted"))]
     Deleted,
-    #[cfg_attr(feature = "serde-any", serde(rename = "token"))]
-    GetToken { token: String },
+    #[cfg_attr(feature = "serde-any", serde(rename = "login"))]
+    Login { token: String, id: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "regenerated"))]
     RegenerateToken { token: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "renamed"))]
@@ -69,8 +69,8 @@ pub struct V1DirItem {
     pub name: String,
 }
 
-#[cfg_attr(feature = "res-ser", derive(Serialize))]
-#[cfg_attr(feature = "res-de", derive(Deserialize))]
+#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
+#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone, Copy)]
 pub struct V1Visibility {
@@ -78,8 +78,8 @@ pub struct V1Visibility {
     pub visibility: ItemVisibility,
 }
 
-#[cfg_attr(feature = "res-ser", derive(Serialize))]
-#[cfg_attr(feature = "res-de", derive(Deserialize))]
+#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
+#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum ItemVisibility {

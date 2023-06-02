@@ -28,7 +28,7 @@ pub struct V1TokenOnly {
 pub struct V1PasswordId {
     pub identifier: String,
     #[cfg_attr(feature = "req-serde-any", serde (rename = "identifier-type"))]
-    pub identifier_type: IdentifierType,
+    pub identifier_type: V1IdentifierType,
     pub password: String,
 }
 
@@ -74,7 +74,7 @@ pub struct V1PathVisibility {
 #[cfg_attr(feature = "req-de", derive(Deserialize))]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone, Copy)]
-pub enum IdentifierType {
+pub enum V1IdentifierType {
     #[cfg_attr(feature = "req-serde-any", serde (rename = "email"))]
     Email,
     #[cfg_attr(feature = "req-serde-any", serde (rename = "id"))]
