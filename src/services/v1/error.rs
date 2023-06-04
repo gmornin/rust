@@ -21,6 +21,8 @@ pub enum V1Error {
     PasswordIncorrect,
     #[cfg_attr(feature = "res-serde-any", serde(rename = "invalid token"))]
     InvalidToken,
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "not verified"))]
+    NotVerified,
 
     // triggers
     #[cfg_attr(feature = "res-serde-any", serde(rename = "email mismatch"))]
@@ -39,8 +41,8 @@ pub enum V1Error {
     FileTooLarge,
     #[cfg_attr(feature = "res-serde-any", serde(rename = "no parent"))]
     NoParent,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "not editable"))]
-    NotEditable,
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "permission denied"))]
+    PermissionDenied,
 
     #[cfg_attr(feature = "res-serde-any", serde(rename = "external"))]
     External { content: String },

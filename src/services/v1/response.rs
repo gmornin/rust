@@ -27,6 +27,8 @@ pub enum V1Response {
     // trigger
     #[cfg_attr(feature = "serde-any", serde(rename = "triggered"))]
     Triggered,
+    #[cfg_attr(feature = "serde-any", serde(rename = "revoked"))]
+    Revoked,
 
     // storage
     #[cfg_attr(feature = "serde-any", serde(rename = "overwritten"))]

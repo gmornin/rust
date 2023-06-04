@@ -48,6 +48,7 @@ pub struct V1RenameAccount {
 pub struct V1FromTo {
     pub token: String,
     pub from: String,
+    pub from_userid: String,
     pub to: String,
 }
 
