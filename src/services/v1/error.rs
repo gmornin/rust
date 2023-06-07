@@ -1,4 +1,7 @@
-use std::{error::Error, fmt::{Display, self}};
+use std::{
+    error::Error,
+    fmt::{self, Display},
+};
 
 #[cfg(feature = "res-serde-any")]
 use serde::*;
@@ -44,6 +47,9 @@ pub enum V1Error {
     #[cfg_attr(feature = "res-serde-any", serde(rename = "permission denied"))]
     PermissionDenied,
 
+    #[cfg_attr(feature = "res-serde-any", serde(rename = "type mismatch"))]
+    TypeMismatch,
+
     #[cfg_attr(feature = "res-serde-any", serde(rename = "external"))]
     External { content: String },
 }
@@ -59,6 +65,20 @@ impl Error for V1Error {}
 #[cfg(feature = "restrait")]
 impl ErrorTrait for V1Error {
     fn external(e: Box<dyn Error>) -> Self {
-        Self::External { content: e.to_string() }
+        Self::External {
+            content: e.to_string(),
+        }
+    }
+
+    fn status_code(&self) -> u16 {
+        match self {
+            Self::NoParent => 400,
+            Self::PasswordIncorrect | Self::InvalidToken => 401,
+            Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied => 403,
+            Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound => 404,
+            Self::UsernameTaken | Self::EmailTaken | Self::PathOccupied | Self::TypeMismatch => 409,
+            Self::FileTooLarge => 413,
+            Self::FsError { .. } | Self::External { .. } => 500,
+        }
     }
 }

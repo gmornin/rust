@@ -9,7 +9,7 @@ edition = "2021"
 serde = { version = "1", features = ["derive"], optional = true }
 
 [features]
-# default = ["debug", "services-v1", "res-serde", "restrait", "req-serde"]
+default = ["debug", "services-v1", "res-serde", "restrait", "req-serde"]
 debug = []
 
 res-serde = ["res-ser", "res-de"]

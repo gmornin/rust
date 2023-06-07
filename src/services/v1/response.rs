@@ -1,10 +1,10 @@
+use crate::traits::ErrorTrait;
 #[cfg(feature = "restrait")]
 use crate::traits::ResTrait;
 
 use super::V1Error;
 #[cfg(feature = "res-serde-any")]
 use serde::*;
-use std::collections::HashMap;
 
 #[cfg_attr(feature = "res-ser", derive(Serialize))]
 #[cfg_attr(feature = "res-de", derive(Deserialize))]
@@ -34,7 +34,7 @@ pub enum V1Response {
     #[cfg_attr(feature = "serde-any", serde(rename = "overwritten"))]
     Overwritten { path: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "dir content"))]
-    DirContent(HashMap<String, V1DirItem>),
+    DirContent { content: Vec<V1DirItem> },
     #[cfg_attr(feature = "serde-any", serde(rename = "visibility changed"))]
     VisibilityChanged,
     #[cfg_attr(feature = "serde-any", serde(rename = "file item created"))]
@@ -59,6 +59,25 @@ impl ResTrait for V1Response {
     fn error(e: <Self as ResTrait>::Error) -> Self {
         Self::Error { kind: e }
     }
+
+    fn status_code(&self) -> u16 {
+        match self {
+            Self::Login { .. }
+            | Self::RegenerateToken { .. }
+            | Self::Renamed
+            | Self::Deleted
+            | Self::Triggered
+            | Self::Revoked
+            | Self::Overwritten { .. }
+            | Self::DirContent { .. }
+            | Self::VisibilityChanged
+            | Self::FileItemDeleted
+            | Self::Moved { .. } => 200,
+            Self::Created { .. } | Self::FileItemCreated { .. } | Self::Copied { .. } => 201,
+            Self::NothingChanged => 304,
+            Self::Error { kind } => kind.status_code(),
+        }
+    }
 }
 
 #[cfg_attr(feature = "res-ser", derive(Serialize))]
@@ -69,6 +88,8 @@ pub struct V1DirItem {
     pub visibility: V1Visibility,
     pub is_file: bool,
     pub name: String,
+    pub last_modified: u64,
+    pub size: u64,
 }
 
 #[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
