@@ -1,7 +1,7 @@
 #[cfg(feature = "req-serde-any")]
 use serde::*;
 
-use super::V1Visibility;
+use super::ItemVisibility;
 
 #[cfg_attr(feature = "req-ser", derive(Serialize))]
 #[cfg_attr(feature = "req-de", derive(Deserialize))]
@@ -48,7 +48,7 @@ pub struct V1RenameAccount {
 pub struct V1FromTo {
     pub token: String,
     pub from: String,
-    pub from_userid: String,
+    pub from_userid: i64,
     pub to: String,
 }
 
@@ -68,7 +68,7 @@ pub struct V1PathOnly {
 pub struct V1PathVisibility {
     pub token: String,
     pub path: String,
-    pub visibility: V1Visibility,
+    pub visibility: ItemVisibility,
 }
 
 #[cfg_attr(feature = "req-ser", derive(Serialize))]

@@ -14,11 +14,11 @@ use serde::*;
 pub enum V1Response {
     // account
     #[cfg_attr(feature = "serde-any", serde(rename = "created"))]
-    Created { id: String, token: String },
+    Created { id: i64, token: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "deleted"))]
     Deleted,
     #[cfg_attr(feature = "serde-any", serde(rename = "login"))]
-    Login { token: String, id: String },
+    Login { id: i64, token: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "regenerated"))]
     RegenerateToken { token: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "renamed"))]
@@ -32,19 +32,19 @@ pub enum V1Response {
 
     // storage
     #[cfg_attr(feature = "serde-any", serde(rename = "overwritten"))]
-    Overwritten { path: String },
+    Overwritten,
     #[cfg_attr(feature = "serde-any", serde(rename = "dir content"))]
     DirContent { content: Vec<V1DirItem> },
     #[cfg_attr(feature = "serde-any", serde(rename = "visibility changed"))]
     VisibilityChanged,
     #[cfg_attr(feature = "serde-any", serde(rename = "file item created"))]
-    FileItemCreated { path: String },
+    FileItemCreated,
     #[cfg_attr(feature = "serde-any", serde(rename = "file item deleted"))]
     FileItemDeleted,
     #[cfg_attr(feature = "serde-any", serde(rename = "copied"))]
-    Copied { path: String },
+    Copied,
     #[cfg_attr(feature = "serde-any", serde(rename = "moved"))]
-    Moved { path: String },
+    Moved,
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
