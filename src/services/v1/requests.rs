@@ -1,4 +1,4 @@
-#[cfg(feature = "req-serde-any")]
+#[cfg(feature = "serde-any")]
 use serde::*;
 
 use super::ItemVisibility;
@@ -27,7 +27,7 @@ pub struct V1TokenOnly {
 #[derive(Clone)]
 pub struct V1PasswordId {
     pub identifier: String,
-    #[cfg_attr(feature = "req-serde-any", serde(rename = "identifier-type"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "identifier-type"))]
     pub identifier_type: V1IdentifierType,
     pub password: String,
 }
@@ -76,10 +76,10 @@ pub struct V1PathVisibility {
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum V1IdentifierType {
-    #[cfg_attr(feature = "req-serde-any", serde(rename = "email"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "email"))]
     Email,
-    #[cfg_attr(feature = "req-serde-any", serde(rename = "id"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "id"))]
     Id,
-    #[cfg_attr(feature = "req-serde-any", serde(rename = "username"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "username"))]
     Username,
 }

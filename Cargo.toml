@@ -13,14 +13,14 @@ default = ["debug", "services-v1", "res-serde", "restrait", "req-serde"]
 debug = []
 
 res-serde = ["res-ser", "res-de"]
-res-ser = ["res-serde-any"]
-res-de = ["res-serde-any"]
-res-serde-any = ["dep:serde"]
+res-ser = ["serde-any"]
+res-de = ["serde-any"]
 
 req-serde = ["req-ser", "req-de"]
-req-ser = ["req-serde-any"]
-req-de = ["req-serde-any"]
-req-serde-any = ["dep:serde"]
+req-ser = ["serde-any"]
+req-de = ["serde-any"]
+
+serde-any = ["dep:serde"]
 
 services-v1 = []
 

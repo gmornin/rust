@@ -3,7 +3,7 @@ use std::{
     fmt::{self, Display},
 };
 
-#[cfg(feature = "res-serde-any")]
+#[cfg(feature = "serde-any")]
 use serde::*;
 
 #[cfg(feature = "restrait")]
@@ -14,43 +14,45 @@ use crate::traits::ErrorTrait;
 #[derive(Clone, Debug)]
 pub enum V1Error {
     // accounts
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "username taken"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "username taken"))]
     UsernameTaken,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "email taken"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "email taken"))]
     EmailTaken,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "no such user"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "no such user"))]
     NoSuchUser,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "password incorrect"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "password incorrect"))]
     PasswordIncorrect,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "invalid token"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "invalid token"))]
     InvalidToken,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "not verified"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "not verified"))]
     NotVerified,
+    #[cfg_attr(feature = "serde-any", serde(rename = "invalid username"))]
+    InvalidUsername,
 
     // triggers
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "email mismatch"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "email mismatch"))]
     EmailMismatch,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "trigger not found"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "trigger not found"))]
     TriggerNotFound,
 
     // storage
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "path occupied"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "path occupied"))]
     PathOccupied,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "file not found"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "file not found"))]
     FileNotFound,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "filesystem error"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "filesystem error"))]
     FsError { content: String },
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "file too large"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "file too large"))]
     FileTooLarge,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "no parent"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "no parent"))]
     NoParent,
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "permission denied"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "permission denied"))]
     PermissionDenied,
 
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "type mismatch"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "type mismatch"))]
     TypeMismatch,
 
-    #[cfg_attr(feature = "res-serde-any", serde(rename = "external"))]
+    #[cfg_attr(feature = "serde-any", serde(rename = "external"))]
     External { content: String },
 }
 
@@ -72,7 +74,7 @@ impl ErrorTrait for V1Error {
 
     fn status_code(&self) -> u16 {
         match self {
-            Self::NoParent => 400,
+            Self::NoParent | Self::InvalidUsername => 400,
             Self::PasswordIncorrect | Self::InvalidToken => 401,
             Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied => 403,
             Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound => 404,

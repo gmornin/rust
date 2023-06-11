@@ -3,12 +3,12 @@ use crate::traits::ErrorTrait;
 use crate::traits::ResTrait;
 
 use super::V1Error;
-#[cfg(feature = "res-serde-any")]
+#[cfg(feature = "serde-any")]
 use serde::*;
 
 #[cfg_attr(feature = "res-ser", derive(Serialize))]
 #[cfg_attr(feature = "res-de", derive(Deserialize))]
-#[cfg_attr(feature = "res-serde-any", serde(tag = "type"))]
+#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone)]
 pub enum V1Response {
