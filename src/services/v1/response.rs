@@ -46,6 +46,10 @@ pub enum V1Response {
     #[cfg_attr(feature = "serde-any", serde(rename = "moved"))]
     Moved,
 
+    // gmt
+    #[cfg_attr(feature = "serde-any", serde(rename = "service created"))]
+    ServiceCreated,
+
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
     #[cfg_attr(feature = "serde-any", serde(rename = "error"))]
@@ -73,7 +77,7 @@ impl ResTrait for V1Response {
             | Self::VisibilityChanged
             | Self::FileItemDeleted
             | Self::Moved { .. } => 200,
-            Self::Created { .. } | Self::FileItemCreated { .. } | Self::Copied { .. } => 201,
+            Self::Created { .. } | Self::FileItemCreated { .. } | Self::Copied { .. } | Self::ServiceCreated => 201,
             Self::NothingChanged => 304,
             Self::Error { kind } => kind.status_code(),
         }

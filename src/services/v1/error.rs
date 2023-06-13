@@ -48,9 +48,12 @@ pub enum V1Error {
     NoParent,
     #[cfg_attr(feature = "serde-any", serde(rename = "permission denied"))]
     PermissionDenied,
-
     #[cfg_attr(feature = "serde-any", serde(rename = "type mismatch"))]
     TypeMismatch,
+
+    // gmt
+    #[cfg_attr(feature = "serde-any", serde(rename = "already created"))]
+    AlreadyCreated,
 
     #[cfg_attr(feature = "serde-any", serde(rename = "external"))]
     External { content: String },
@@ -78,7 +81,7 @@ impl ErrorTrait for V1Error {
             Self::PasswordIncorrect | Self::InvalidToken => 401,
             Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied => 403,
             Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound => 404,
-            Self::UsernameTaken | Self::EmailTaken | Self::PathOccupied | Self::TypeMismatch => 409,
+            Self::UsernameTaken | Self::EmailTaken | Self::PathOccupied | Self::TypeMismatch | Self::AlreadyCreated => 409,
             Self::FileTooLarge => 413,
             Self::FsError { .. } | Self::External { .. } => 500,
         }

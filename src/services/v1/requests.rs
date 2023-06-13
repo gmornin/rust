@@ -48,7 +48,18 @@ pub struct V1RenameAccount {
 pub struct V1FromTo {
     pub token: String,
     pub from: String,
+    #[cfg_attr(feature = "serde-any", serde(rename = "from-userid"))]
     pub from_userid: i64,
+    pub to: String,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1SelfFromTo {
+    pub token: String,
+    pub from: String,
     pub to: String,
 }
 
