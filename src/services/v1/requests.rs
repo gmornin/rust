@@ -1,6 +1,8 @@
 #[cfg(feature = "serde-any")]
 use serde::*;
 
+use crate::structs::Profile;
+
 use super::ItemVisibility;
 
 #[cfg_attr(feature = "req-ser", derive(Serialize))]
@@ -93,4 +95,13 @@ pub enum V1IdentifierType {
     Id,
     #[cfg_attr(feature = "serde-any", serde(rename = "username"))]
     Username,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1ProfileOnly {
+    pub token: String,
+    pub profile: Profile,
 }

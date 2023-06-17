@@ -1,6 +1,6 @@
-use crate::traits::ErrorTrait;
 #[cfg(feature = "restrait")]
 use crate::traits::ResTrait;
+use crate::{structs::Profile, traits::ErrorTrait};
 
 use super::V1Error;
 #[cfg(feature = "serde-any")]
@@ -49,6 +49,10 @@ pub enum V1Response {
     // gmt
     #[cfg_attr(feature = "serde-any", serde(rename = "service created"))]
     ServiceCreated,
+    #[cfg_attr(feature = "serde-any", serde(rename = "profile updated"))]
+    ProfileUpdated,
+    #[cfg_attr(feature = "serde-any", serde(rename = "profile"))]
+    Profile { profile: Profile },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
@@ -76,8 +80,13 @@ impl ResTrait for V1Response {
             | Self::DirContent { .. }
             | Self::VisibilityChanged
             | Self::FileItemDeleted
+            | Self::ProfileUpdated
+            | Self::Profile { .. }
             | Self::Moved { .. } => 200,
-            Self::Created { .. } | Self::FileItemCreated { .. } | Self::Copied { .. } | Self::ServiceCreated => 201,
+            Self::Created { .. }
+            | Self::FileItemCreated { .. }
+            | Self::Copied { .. }
+            | Self::ServiceCreated => 201,
             Self::NothingChanged => 304,
             Self::Error { kind } => kind.status_code(),
         }

@@ -54,6 +54,14 @@ pub enum V1Error {
     // gmt
     #[cfg_attr(feature = "serde-any", serde(rename = "already created"))]
     AlreadyCreated,
+    #[cfg_attr(feature = "serde-any", serde(rename = "not created"))]
+    NotCreated,
+    #[cfg_attr(feature = "serde-any", serde(rename = "too many profile details"))]
+    TooManyProfileDetails,
+    #[cfg_attr(feature = "serde-any", serde(rename = "exceeds maximum length"))]
+    ExceedsMaximumLength,
+    #[cfg_attr(feature = "serde-any", serde(rename = "file type mismatch"))]
+    FileTypeMismatch { expected: String, got: String },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "external"))]
     External { content: String },
@@ -77,12 +85,17 @@ impl ErrorTrait for V1Error {
 
     fn status_code(&self) -> u16 {
         match self {
-            Self::NoParent | Self::InvalidUsername => 400,
+            Self::NoParent | Self::InvalidUsername | Self::TooManyProfileDetails => 400,
             Self::PasswordIncorrect | Self::InvalidToken => 401,
             Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied => 403,
-            Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound => 404,
-            Self::UsernameTaken | Self::EmailTaken | Self::PathOccupied | Self::TypeMismatch | Self::AlreadyCreated => 409,
-            Self::FileTooLarge => 413,
+            Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound | Self::NotCreated => 404,
+            Self::UsernameTaken
+            | Self::EmailTaken
+            | Self::PathOccupied
+            | Self::TypeMismatch
+            | Self::AlreadyCreated => 409,
+            Self::FileTooLarge | Self::ExceedsMaximumLength => 413,
+            Self::FileTypeMismatch { .. } => 415,
             Self::FsError { .. } | Self::External { .. } => 500,
         }
     }
