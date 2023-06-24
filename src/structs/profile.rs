@@ -1,8 +1,15 @@
 use serde::{Deserialize, Serialize};
 
+// #[derive(Serialize, Deserialize, Clone)]
+// #[cfg_attr(feature = "debug", derive(Debug))]
+// pub struct Profile {
+//     customisable: ProfileCustomisable,
+//     account: ProfileAccount,
+// }
+
 #[derive(Serialize, Deserialize, Clone, Default)]
 #[cfg_attr(feature = "debug", derive(Debug))]
-pub struct Profile {
+pub struct ProfileCustomisable {
     pub description: String,
     pub details: Vec<ProfileDetail>,
 }
@@ -22,8 +29,6 @@ pub enum ProfileDetail {
     Contact { value: ContactDetail },
     #[cfg_attr(feature = "serde-any", serde(rename = "company"))]
     Company { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "website"))]
-    Website { value: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "school"))]
     School { value: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "education"))]
@@ -72,4 +77,15 @@ pub enum ContactDetail {
     Youtube { value: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "odysee"))]
     Odysee { value: String },
+    #[cfg_attr(feature = "serde-any", serde(rename = "website"))]
+    Website { value: String },
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[cfg_attr(feature = "debug", derive(Debug))]
+pub struct ProfileAccount {
+    pub id: i64,
+    pub username: String,
+    pub verified: bool,
+    pub created: u64,
 }

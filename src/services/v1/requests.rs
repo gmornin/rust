@@ -1,7 +1,7 @@
 #[cfg(feature = "serde-any")]
 use serde::*;
 
-use crate::structs::Profile;
+use crate::structs::ProfileCustomisable;
 
 use super::ItemVisibility;
 
@@ -103,5 +103,5 @@ pub enum V1IdentifierType {
 #[derive(Clone)]
 pub struct V1ProfileOnly {
     pub token: String,
-    pub profile: Profile,
+    pub profile: ProfileCustomisable,
 }

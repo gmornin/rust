@@ -1,6 +1,9 @@
 #[cfg(feature = "restrait")]
 use crate::traits::ResTrait;
-use crate::{structs::Profile, traits::ErrorTrait};
+use crate::{
+    structs::{ProfileAccount, ProfileCustomisable},
+    traits::ErrorTrait,
+};
 
 use super::V1Error;
 #[cfg(feature = "serde-any")]
@@ -52,7 +55,14 @@ pub enum V1Response {
     #[cfg_attr(feature = "serde-any", serde(rename = "profile updated"))]
     ProfileUpdated,
     #[cfg_attr(feature = "serde-any", serde(rename = "profile"))]
-    Profile { profile: Profile },
+    Profile {
+        profile: ProfileCustomisable,
+        account: ProfileAccount,
+    },
+    #[cfg_attr(feature = "serde-any", serde(rename = "profile-only"))]
+    ProfileOnly { profile: ProfileCustomisable },
+    #[cfg_attr(feature = "serde-any", serde(rename = "pfp reset"))]
+    PfpReset,
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
@@ -82,7 +92,9 @@ impl ResTrait for V1Response {
             | Self::FileItemDeleted
             | Self::ProfileUpdated
             | Self::Profile { .. }
-            | Self::Moved { .. } => 200,
+            | Self::PfpReset
+            | Self::Moved { .. }
+            | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
             | Self::Copied { .. }
