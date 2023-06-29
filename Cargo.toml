@@ -7,9 +7,10 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1", features = ["derive"], optional = true }
+chrono = { version = "0.4", optional = true}
 
 [features]
-default = ["debug", "services-v1", "res-serde", "restrait", "req-serde"]
+default = ["debug", "services-v1", "res-serde", "restrait", "req-serde", "profile-validate"]
 debug = []
 
 res-serde = ["res-ser", "res-de"]
@@ -20,6 +21,7 @@ req-serde = ["req-ser", "req-de"]
 req-ser = ["serde-any"]
 req-de = ["serde-any"]
 
+profile-validate =  ["dep:chrono"]
 serde-any = ["dep:serde"]
 
 services-v1 = []

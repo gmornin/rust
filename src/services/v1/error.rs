@@ -50,6 +50,10 @@ pub enum V1Error {
     PermissionDenied,
     #[cfg_attr(feature = "serde-any", serde(rename = "type mismatch"))]
     TypeMismatch,
+    #[cfg_attr(feature = "serde-any", serde(rename = "file type mismatch"))]
+    FileTypeMismatch { expected: String, got: String },
+    #[cfg_attr(feature = "serde-any", serde(rename = "extension mismatch"))]
+    ExtensionMismatch,
 
     // gmt
     #[cfg_attr(feature = "serde-any", serde(rename = "already created"))]
@@ -60,8 +64,10 @@ pub enum V1Error {
     TooManyProfileDetails,
     #[cfg_attr(feature = "serde-any", serde(rename = "exceeds maximum length"))]
     ExceedsMaximumLength,
-    #[cfg_attr(feature = "serde-any", serde(rename = "file type mismatch"))]
-    FileTypeMismatch { expected: String, got: String },
+    #[cfg_attr(feature = "serde-any", serde(rename = "birth cake conflict"))]
+    BirthCakeConflict,
+    #[cfg_attr(feature = "serde-any", serde(rename = "invalid detail"))]
+    InvalidDetail { index: u8 },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "external"))]
     External { content: String },
@@ -85,7 +91,10 @@ impl ErrorTrait for V1Error {
 
     fn status_code(&self) -> u16 {
         match self {
-            Self::NoParent | Self::InvalidUsername | Self::TooManyProfileDetails => 400,
+            Self::NoParent
+            | Self::InvalidUsername
+            | Self::TooManyProfileDetails
+            | Self::InvalidDetail { .. } => 400,
             Self::PasswordIncorrect | Self::InvalidToken => 401,
             Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied => 403,
             Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound | Self::NotCreated => 404,
@@ -93,9 +102,10 @@ impl ErrorTrait for V1Error {
             | Self::EmailTaken
             | Self::PathOccupied
             | Self::TypeMismatch
+            | Self::BirthCakeConflict
             | Self::AlreadyCreated => 409,
             Self::FileTooLarge | Self::ExceedsMaximumLength => 413,
-            Self::FileTypeMismatch { .. } => 415,
+            Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
             Self::FsError { .. } | Self::External { .. } => 500,
         }
     }

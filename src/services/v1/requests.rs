@@ -47,6 +47,15 @@ pub struct V1RenameAccount {
 #[cfg_attr(feature = "req-de", derive(Deserialize))]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone)]
+pub struct V1SetStatus {
+    pub token: String,
+    pub new: String,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
 pub struct V1FromTo {
     pub token: String,
     pub from: String,
