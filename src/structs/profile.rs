@@ -41,6 +41,7 @@ impl ProfileCustomisable {
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
 pub enum ProfileDetail {
     #[cfg_attr(feature = "serde-any", serde(rename = "cake day"))]
     CakeDay { value: CakeDayDetail },
@@ -114,6 +115,7 @@ impl BirthDayDetail {
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
 pub enum ContactDetail {
     #[cfg_attr(feature = "serde-any", serde(rename = "email"))]
     Email { name: String, instance: String },

@@ -11,6 +11,7 @@ use crate::traits::ErrorTrait;
 
 #[cfg_attr(feature = "res-ser", derive(Serialize))]
 #[cfg_attr(feature = "res-de", derive(Deserialize))]
+#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
 #[derive(Clone, Debug)]
 pub enum V1Error {
     // accounts
@@ -104,8 +105,16 @@ impl ErrorTrait for V1Error {
             | Self::TooManyProfileDetails
             | Self::InvalidDetail { .. } => 400,
             Self::PasswordIncorrect | Self::InvalidToken => 401,
-            Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied | Self::BrowserNotAllowed | Self::GmtOnly => 403,
-            Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound | Self::NotCreated | Self::JobNotFound => 404,
+            Self::NotVerified
+            | Self::EmailMismatch
+            | Self::PermissionDenied
+            | Self::BrowserNotAllowed
+            | Self::GmtOnly => 403,
+            Self::NoSuchUser
+            | Self::TriggerNotFound
+            | Self::FileNotFound
+            | Self::NotCreated
+            | Self::JobNotFound => 404,
             Self::UsernameTaken
             | Self::EmailTaken
             | Self::PathOccupied

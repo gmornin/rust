@@ -63,8 +63,12 @@ pub enum V1Response {
     ProfileOnly { profile: ProfileCustomisable },
     #[cfg_attr(feature = "serde-any", serde(rename = "pfp reset"))]
     PfpReset,
-    #[cfg_attr(feature = "serde-any", serde(rename = "compile success"))]
-    Compiled { id: u64, newpath: String, message: String },
+    #[cfg_attr(feature = "serde-any", serde(rename = "compiled"))]
+    Compiled {
+        id: u64,
+        newpath: String,
+        message: String,
+    },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,

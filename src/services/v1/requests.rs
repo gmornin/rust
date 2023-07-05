@@ -123,7 +123,7 @@ pub struct V1Compile {
     pub token: String,
     pub path: String,
     pub from: FromFormat,
-    pub to: ToFormat
+    pub to: ToFormat,
 }
 
 #[cfg_attr(feature = "req-ser", derive(Serialize))]
