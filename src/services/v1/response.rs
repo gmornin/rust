@@ -63,6 +63,8 @@ pub enum V1Response {
     ProfileOnly { profile: ProfileCustomisable },
     #[cfg_attr(feature = "serde-any", serde(rename = "pfp reset"))]
     PfpReset,
+    #[cfg_attr(feature = "serde-any", serde(rename = "compile success"))]
+    Compiled { id: u64, newpath: String, message: String },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
@@ -97,6 +99,7 @@ impl ResTrait for V1Response {
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
+            | Self::Compiled { .. }
             | Self::Copied { .. }
             | Self::ServiceCreated => 201,
             Self::NothingChanged => 304,

@@ -54,6 +54,10 @@ pub enum V1Error {
     FileTypeMismatch { expected: String, got: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "extension mismatch"))]
     ExtensionMismatch,
+    #[cfg_attr(feature = "serde-any", serde(rename = "browser not allowed"))]
+    BrowserNotAllowed,
+    #[cfg_attr(feature = "serde-any", serde(rename = "job not found"))]
+    JobNotFound,
 
     // gmt
     #[cfg_attr(feature = "serde-any", serde(rename = "already created"))]
@@ -68,6 +72,10 @@ pub enum V1Error {
     BirthCakeConflict,
     #[cfg_attr(feature = "serde-any", serde(rename = "invalid detail"))]
     InvalidDetail { index: u8 },
+    #[cfg_attr(feature = "serde-any", serde(rename = "gmt only"))]
+    GmtOnly,
+    #[cfg_attr(feature = "serde-any", serde(rename = "compile error"))]
+    CompileError { content: String },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "external"))]
     External { content: String },
@@ -96,8 +104,8 @@ impl ErrorTrait for V1Error {
             | Self::TooManyProfileDetails
             | Self::InvalidDetail { .. } => 400,
             Self::PasswordIncorrect | Self::InvalidToken => 401,
-            Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied => 403,
-            Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound | Self::NotCreated => 404,
+            Self::NotVerified | Self::EmailMismatch | Self::PermissionDenied | Self::BrowserNotAllowed | Self::GmtOnly => 403,
+            Self::NoSuchUser | Self::TriggerNotFound | Self::FileNotFound | Self::NotCreated | Self::JobNotFound => 404,
             Self::UsernameTaken
             | Self::EmailTaken
             | Self::PathOccupied
@@ -106,7 +114,7 @@ impl ErrorTrait for V1Error {
             | Self::AlreadyCreated => 409,
             Self::FileTooLarge | Self::ExceedsMaximumLength => 413,
             Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
-            Self::FsError { .. } | Self::External { .. } => 500,
+            Self::FsError { .. } | Self::External { .. } | Self::CompileError { .. } => 500,
         }
     }
 }

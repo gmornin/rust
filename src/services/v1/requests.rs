@@ -114,3 +114,32 @@ pub struct V1ProfileOnly {
     pub token: String,
     pub profile: ProfileCustomisable,
 }
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1Compile {
+    pub token: String,
+    pub path: String,
+    pub from: FromFormat,
+    pub to: ToFormat
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone, Copy)]
+pub enum FromFormat {
+    #[cfg_attr(feature = "serde-any", serde(rename = "markdown"))]
+    Markdown,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone, Copy)]
+pub enum ToFormat {
+    #[cfg_attr(feature = "serde-any", serde(rename = "html"))]
+    Html,
+}
