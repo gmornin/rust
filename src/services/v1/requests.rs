@@ -47,6 +47,16 @@ pub struct V1RenameAccount {
 #[cfg_attr(feature = "req-de", derive(Deserialize))]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone)]
+pub struct V1ChangePassword {
+    pub token: String,
+    pub old: String,
+    pub new: String,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
 pub struct V1SetStatus {
     pub token: String,
     pub new: String,
@@ -124,6 +134,16 @@ pub struct V1Compile {
     pub path: String,
     pub from: FromFormat,
     pub to: ToFormat,
+    pub compiler: Option<Compiler>,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1ChangeEmail {
+    pub token: String,
+    pub email: String,
 }
 
 #[cfg_attr(feature = "req-ser", derive(Serialize))]
@@ -133,6 +153,8 @@ pub struct V1Compile {
 pub enum FromFormat {
     #[cfg_attr(feature = "serde-any", serde(rename = "markdown"))]
     Markdown,
+    #[cfg_attr(feature = "serde-any", serde(rename = "latex"))]
+    Latex,
 }
 
 #[cfg_attr(feature = "req-ser", derive(Serialize))]
@@ -142,4 +164,25 @@ pub enum FromFormat {
 pub enum ToFormat {
     #[cfg_attr(feature = "serde-any", serde(rename = "html"))]
     Html,
+    #[cfg_attr(feature = "serde-any", serde(rename = "pdf"))]
+    Pdf,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone, Copy)]
+pub enum Compiler {
+    #[cfg_attr(feature = "serde-any", serde(rename = "default"))]
+    Default,
+    #[cfg_attr(feature = "serde-any", serde(rename = "pulldown cmark"))]
+    PulldownCmark,
+    #[cfg_attr(feature = "serde-any", serde(rename = "pdflatex"))]
+    Pdflatex,
+}
+
+impl Default for Compiler {
+    fn default() -> Self {
+        Self::Default
+    }
 }

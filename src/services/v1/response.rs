@@ -26,6 +26,12 @@ pub enum V1Response {
     RegenerateToken { token: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "renamed"))]
     Renamed,
+    #[cfg_attr(feature = "serde-any", serde(rename = "email changed"))]
+    EmailChanged,
+    #[cfg_attr(feature = "serde-any", serde(rename = "password changed"))]
+    PasswordChanged,
+    #[cfg_attr(feature = "serde-any", serde(rename = "verification sent"))]
+    VerificationSent,
 
     // trigger
     #[cfg_attr(feature = "serde-any", serde(rename = "triggered"))]
@@ -64,11 +70,7 @@ pub enum V1Response {
     #[cfg_attr(feature = "serde-any", serde(rename = "pfp reset"))]
     PfpReset,
     #[cfg_attr(feature = "serde-any", serde(rename = "compiled"))]
-    Compiled {
-        id: u64,
-        newpath: String,
-        message: String,
-    },
+    Compiled { id: u64, newpath: String },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
@@ -89,6 +91,7 @@ impl ResTrait for V1Response {
             Self::Login { .. }
             | Self::RegenerateToken { .. }
             | Self::Renamed
+            | Self::EmailChanged
             | Self::Deleted
             | Self::Triggered
             | Self::Revoked
@@ -100,6 +103,8 @@ impl ResTrait for V1Response {
             | Self::Profile { .. }
             | Self::PfpReset
             | Self::Moved { .. }
+            | Self::PasswordChanged
+            | Self::VerificationSent
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }

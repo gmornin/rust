@@ -29,6 +29,10 @@ pub enum V1Error {
     NotVerified,
     #[cfg_attr(feature = "serde-any", serde(rename = "invalid username"))]
     InvalidUsername,
+    #[cfg_attr(feature = "serde-any", serde(rename = "already verified"))]
+    AlreadyVerified,
+    #[cfg_attr(feature = "serde-any", serde(rename = "cooldown"))]
+    Cooldown { remaining: u64 },
 
     // triggers
     #[cfg_attr(feature = "serde-any", serde(rename = "email mismatch"))]
@@ -77,6 +81,8 @@ pub enum V1Error {
     GmtOnly,
     #[cfg_attr(feature = "serde-any", serde(rename = "compile error"))]
     CompileError { content: String },
+    #[cfg_attr(feature = "serde-any", serde(rename = "invalid compile request"))]
+    InvalidCompileRequest,
 
     #[cfg_attr(feature = "serde-any", serde(rename = "external"))]
     External { content: String },
@@ -103,6 +109,8 @@ impl ErrorTrait for V1Error {
             Self::NoParent
             | Self::InvalidUsername
             | Self::TooManyProfileDetails
+            | Self::InvalidCompileRequest
+            | Self::AlreadyVerified
             | Self::InvalidDetail { .. } => 400,
             Self::PasswordIncorrect | Self::InvalidToken => 401,
             Self::NotVerified
@@ -123,6 +131,7 @@ impl ErrorTrait for V1Error {
             | Self::AlreadyCreated => 409,
             Self::FileTooLarge | Self::ExceedsMaximumLength => 413,
             Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
+            Self::Cooldown { .. } => 429,
             Self::FsError { .. } | Self::External { .. } | Self::CompileError { .. } => 500,
         }
     }
