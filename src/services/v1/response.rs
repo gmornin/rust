@@ -32,6 +32,8 @@ pub enum V1Response {
     PasswordChanged,
     #[cfg_attr(feature = "serde-any", serde(rename = "verification sent"))]
     VerificationSent,
+    #[cfg_attr(feature = "serde-any", serde(rename = "tree"))]
+    Tree { content: V1DirTreeNode },
 
     // trigger
     #[cfg_attr(feature = "serde-any", serde(rename = "triggered"))]
@@ -89,6 +91,7 @@ impl ResTrait for V1Response {
     fn status_code(&self) -> u16 {
         match self {
             Self::Login { .. }
+            | Self::Tree { .. }
             | Self::RegenerateToken { .. }
             | Self::Renamed
             | Self::EmailChanged
@@ -143,10 +146,33 @@ pub struct V1Visibility {
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum ItemVisibility {
-    #[serde(rename = "hidden")]
+    #[cfg_attr(feature = "serde-any", serde(rename = "hidden"))]
     Hidden,
-    #[serde(rename = "public")]
+    #[cfg_attr(feature = "serde-any", serde(rename = "public"))]
     Public,
-    #[serde(rename = "private")]
+    #[cfg_attr(feature = "serde-any", serde(rename = "private"))]
     Private,
+}
+
+#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
+#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1DirTreeNode {
+    pub visibility: V1Visibility,
+    pub name: String,
+    #[cfg_attr(feature = "serde-any", serde(flatten))]
+    pub content: V1DirTreeItem,
+}
+
+#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
+#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
+#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub enum V1DirTreeItem {
+    #[cfg_attr(feature = "serde-any", serde(rename = "file"))]
+    File { last_modified: u64, size: u64 },
+    #[cfg_attr(feature = "serde-any", serde(rename = "dir"))]
+    Dir { content: Vec<V1DirTreeNode> },
 }
