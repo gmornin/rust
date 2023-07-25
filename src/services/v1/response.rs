@@ -56,6 +56,8 @@ pub enum V1Response {
     Copied,
     #[cfg_attr(feature = "serde-any", serde(rename = "moved"))]
     Moved,
+    #[cfg_attr(feature = "serde-any", serde(rename = "exists"))]
+    Exists { value: bool },
 
     // gmt
     #[cfg_attr(feature = "serde-any", serde(rename = "service created"))]
@@ -108,6 +110,7 @@ impl ResTrait for V1Response {
             | Self::Moved { .. }
             | Self::PasswordChanged
             | Self::VerificationSent
+            | Self::Exists { .. }
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
