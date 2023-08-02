@@ -149,6 +149,15 @@ pub struct V1ChangeEmail {
 #[cfg_attr(feature = "req-ser", derive(Serialize))]
 #[cfg_attr(feature = "req-de", derive(Deserialize))]
 #[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1Unqueue {
+    pub token: String,
+    pub id: u64,
+}
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum FromFormat {
     #[cfg_attr(feature = "serde-any", serde(rename = "markdown"))]

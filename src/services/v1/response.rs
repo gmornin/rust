@@ -5,7 +5,7 @@ use crate::{
     traits::ErrorTrait,
 };
 
-use super::V1Error;
+use super::{Compiler, FromFormat, ToFormat, V1Error};
 #[cfg(feature = "serde-any")]
 use serde::*;
 
@@ -34,6 +34,13 @@ pub enum V1Response {
     VerificationSent,
     #[cfg_attr(feature = "serde-any", serde(rename = "tree"))]
     Tree { content: V1DirTreeNode },
+    #[cfg_attr(feature = "serde-any", serde(rename = "jobs"))]
+    Jobs {
+        current: Vec<V1Job>,
+        queue: Vec<V1Job>,
+    },
+    #[cfg_attr(feature = "serde-any", serde(rename = "unqueued"))]
+    Unqueued,
 
     // trigger
     #[cfg_attr(feature = "serde-any", serde(rename = "triggered"))]
@@ -94,6 +101,7 @@ impl ResTrait for V1Response {
         match self {
             Self::Login { .. }
             | Self::Tree { .. }
+            | Self::Jobs { .. }
             | Self::RegenerateToken { .. }
             | Self::Renamed
             | Self::EmailChanged
@@ -111,6 +119,7 @@ impl ResTrait for V1Response {
             | Self::PasswordChanged
             | Self::VerificationSent
             | Self::Exists { .. }
+            | Self::Unqueued
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
@@ -178,4 +187,29 @@ pub enum V1DirTreeItem {
     File { last_modified: u64, size: u64 },
     #[cfg_attr(feature = "serde-any", serde(rename = "dir"))]
     Dir { content: Vec<V1DirTreeNode> },
+}
+
+#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
+#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1Job {
+    pub id: u64,
+    #[cfg_attr(feature = "serde-any", serde(flatten))]
+    pub task: V1Task,
+}
+
+#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
+#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
+#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub enum V1Task {
+    #[cfg_attr(feature = "serde-any", serde(rename = "compile"))]
+    Compile {
+        from: FromFormat,
+        to: ToFormat,
+        compiler: Compiler,
+        path: String,
+    },
 }
