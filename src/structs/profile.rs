@@ -67,7 +67,32 @@ impl ProfileDetail {
         match self {
             Self::CakeDay { value } => value.validate(),
             Self::BirthDay { value } => value.validate(),
-            _ => true,
+            Self::Location { value }
+            | Self::Occupation { value }
+            | Self::Company { value }
+            | Self::School { value }
+            | Self::EducationLevel { value }
+            | Self::Contact {
+                value:
+                    ContactDetail::Github { value }
+                    | ContactDetail::Gitlab { value }
+                    | ContactDetail::Bitbucket { value }
+                    | ContactDetail::Reddit { value }
+                    | ContactDetail::Discord { value }
+                    | ContactDetail::Twitter { value }
+                    | ContactDetail::Youtube { value }
+                    | ContactDetail::Website { value },
+            } => value.len() > 50,
+            Self::Contact {
+                value:
+                    ContactDetail::Email { name, instance }
+                    | ContactDetail::Matrix { name, instance }
+                    | ContactDetail::Mastodon { name, instance }
+                    | ContactDetail::Lemmy { name, instance },
+            } => name.len() < 30 && instance.len() < 30 && instance.contains('.'),
+            Self::Contact {
+                value: ContactDetail::Odysee { name, .. },
+            } => name.len() < 30,
         }
     }
 }
