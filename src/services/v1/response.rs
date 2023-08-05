@@ -82,6 +82,8 @@ pub enum V1Response {
     PfpReset,
     #[cfg_attr(feature = "serde-any", serde(rename = "compiled"))]
     Compiled { id: u64, newpath: String },
+    #[cfg_attr(feature = "serde-any", serde(rename = "tex published"))]
+    TexPublished { id: u64 },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
@@ -125,6 +127,7 @@ impl ResTrait for V1Response {
             | Self::FileItemCreated { .. }
             | Self::Compiled { .. }
             | Self::Copied { .. }
+            | Self::TexPublished { .. }
             | Self::ServiceCreated => 201,
             Self::NothingChanged => 304,
             Self::Error { kind } => kind.status_code(),

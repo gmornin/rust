@@ -195,3 +195,14 @@ impl Default for Compiler {
         Self::Default
     }
 }
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1Publish {
+    pub token: String,
+    pub path: String,
+    pub title: String,
+    pub desc: String
+}
