@@ -206,3 +206,14 @@ pub struct V1Publish {
     pub title: String,
     pub desc: String
 }
+
+#[cfg_attr(feature = "req-ser", derive(Serialize))]
+#[cfg_attr(feature = "req-de", derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1UpdatePublish {
+    pub token: String,
+    pub id: i64,
+    pub title: String,
+    pub desc: String
+}

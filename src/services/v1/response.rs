@@ -84,6 +84,8 @@ pub enum V1Response {
     Compiled { id: u64, newpath: String },
     #[cfg_attr(feature = "serde-any", serde(rename = "tex published"))]
     TexPublished { id: u64 },
+    #[cfg_attr(feature = "serde-any", serde(rename = "tex user publishes"))]
+    TexUserPublishes { items: Vec<V1TexUserPublish> },
 
     #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
     NothingChanged,
@@ -122,6 +124,7 @@ impl ResTrait for V1Response {
             | Self::VerificationSent
             | Self::Exists { .. }
             | Self::Unqueued
+            | Self::TexUserPublishes { .. }
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
@@ -215,4 +218,16 @@ pub enum V1Task {
         compiler: Compiler,
         path: String,
     },
+}
+
+#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
+#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone)]
+pub struct V1TexUserPublish {
+    pub id: i64,
+    pub published: u64,
+    pub title: String,
+    pub desc: String,
+    pub ext: String
 }
