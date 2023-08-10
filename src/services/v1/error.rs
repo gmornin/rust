@@ -33,6 +33,8 @@ pub enum V1Error {
     AlreadyVerified,
     #[cfg_attr(feature = "serde-any", serde(rename = "cooldown"))]
     Cooldown { remaining: u64 },
+    #[cfg_attr(feature = "serde-any", serde(rename = "entry not found"))]
+    EntryNotFound,
 
     // triggers
     #[cfg_attr(feature = "serde-any", serde(rename = "email mismatch"))]
@@ -122,6 +124,7 @@ impl ErrorTrait for V1Error {
             | Self::TriggerNotFound
             | Self::FileNotFound
             | Self::NotCreated
+            | Self::EntryNotFound
             | Self::JobNotFound => 404,
             Self::UsernameTaken
             | Self::EmailTaken

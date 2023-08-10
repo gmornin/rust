@@ -229,5 +229,5 @@ pub struct V1TexUserPublish {
     pub published: u64,
     pub title: String,
     pub desc: String,
-    pub ext: String
+    pub ext: String,
 }

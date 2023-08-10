@@ -82,7 +82,7 @@ impl ProfileDetail {
                     | ContactDetail::Twitter { value }
                     | ContactDetail::Youtube { value }
                     | ContactDetail::Website { value },
-            } => value.len() > 50,
+            } => value.len() < 50,
             Self::Contact {
                 value:
                     ContactDetail::Email { name, instance }
