@@ -1,8 +1,10 @@
+use std::fmt::Debug;
+
 #[cfg(feature = "restrait")]
 use crate::traits::ResTrait;
 use crate::{
     structs::{ProfileAccount, ProfileCustomisable},
-    traits::ErrorTrait,
+    traits::{ErrorTrait, TaskRes},
 };
 
 use super::{Compiler, FromFormat, ToFormat, V1Error};
@@ -202,7 +204,7 @@ pub enum V1DirTreeItem {
 pub struct V1Job {
     pub id: u64,
     #[cfg_attr(feature = "serde-any", serde(flatten))]
-    pub task: V1Task,
+    pub task: Box<dyn TaskRes>,
 }
 
 #[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]

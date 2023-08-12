@@ -8,6 +8,10 @@ edition = "2021"
 [dependencies]
 serde = { version = "1", features = ["derive"], optional = true }
 chrono = { version = "0.4", optional = true}
+erased-serde = { version = "0.3", optional = true}
+serde_json = { version = "1", optional = true}
+dyn-clone = "1"
+typetag = "0.2"
 
 [features]
 default = ["debug", "services-v1", "res-serde", "restrait", "req-serde", "profile-validate"]
@@ -22,7 +26,7 @@ req-ser = ["serde-any"]
 req-de = ["serde-any"]
 
 profile-validate =  ["dep:chrono"]
-serde-any = ["dep:serde"]
+serde-any = ["dep:serde", "dep:erased-serde", "dep:serde_json"]
 
 services-v1 = []
 
