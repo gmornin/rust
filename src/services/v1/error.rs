@@ -3,91 +3,92 @@ use std::{
     fmt::{self, Display},
 };
 
-#[cfg(feature = "serde-any")]
-use serde::*;
+use serde::{Deserialize, Serialize};
 
-#[cfg(feature = "restrait")]
-use crate::traits::ErrorTrait;
+use crate::traits::{ErrorTrait, SerdeAny};
 
-#[cfg_attr(feature = "res-ser", derive(Serialize))]
-#[cfg_attr(feature = "res-de", derive(Deserialize))]
-#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
-#[derive(Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(tag = "type")]
 pub enum V1Error {
     // accounts
-    #[cfg_attr(feature = "serde-any", serde(rename = "username taken"))]
+    #[serde(rename = "username taken")]
     UsernameTaken,
-    #[cfg_attr(feature = "serde-any", serde(rename = "email taken"))]
+    #[serde(rename = "email taken")]
     EmailTaken,
-    #[cfg_attr(feature = "serde-any", serde(rename = "no such user"))]
+    #[serde(rename = "no such user")]
     NoSuchUser,
-    #[cfg_attr(feature = "serde-any", serde(rename = "password incorrect"))]
+    #[serde(rename = "password incorrect")]
     PasswordIncorrect,
-    #[cfg_attr(feature = "serde-any", serde(rename = "invalid token"))]
+    #[serde(rename = "invalid token")]
     InvalidToken,
-    #[cfg_attr(feature = "serde-any", serde(rename = "not verified"))]
+    #[serde(rename = "not verified")]
     NotVerified,
-    #[cfg_attr(feature = "serde-any", serde(rename = "invalid username"))]
+    #[serde(rename = "invalid username")]
     InvalidUsername,
-    #[cfg_attr(feature = "serde-any", serde(rename = "already verified"))]
+    #[serde(rename = "already verified")]
     AlreadyVerified,
-    #[cfg_attr(feature = "serde-any", serde(rename = "cooldown"))]
+    #[serde(rename = "cooldown")]
     Cooldown { remaining: u64 },
-    #[cfg_attr(feature = "serde-any", serde(rename = "entry not found"))]
+    #[serde(rename = "entry not found")]
     EntryNotFound,
+    #[serde(rename = "timed out")]
+    TimedOut,
 
     // triggers
-    #[cfg_attr(feature = "serde-any", serde(rename = "email mismatch"))]
+    #[serde(rename = "email mismatch")]
     EmailMismatch,
-    #[cfg_attr(feature = "serde-any", serde(rename = "trigger not found"))]
+    #[serde(rename = "trigger not found")]
     TriggerNotFound,
 
     // storage
-    #[cfg_attr(feature = "serde-any", serde(rename = "path occupied"))]
+    #[serde(rename = "path occupied")]
     PathOccupied,
-    #[cfg_attr(feature = "serde-any", serde(rename = "file not found"))]
+    #[serde(rename = "file not found")]
     FileNotFound,
-    #[cfg_attr(feature = "serde-any", serde(rename = "filesystem error"))]
+    #[serde(rename = "filesystem error")]
     FsError { content: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "file too large"))]
+    #[serde(rename = "file too large")]
     FileTooLarge,
-    #[cfg_attr(feature = "serde-any", serde(rename = "no parent"))]
+    #[serde(rename = "no parent")]
     NoParent,
-    #[cfg_attr(feature = "serde-any", serde(rename = "permission denied"))]
+    #[serde(rename = "permission denied")]
     PermissionDenied,
-    #[cfg_attr(feature = "serde-any", serde(rename = "type mismatch"))]
+    #[serde(rename = "type mismatch")]
     TypeMismatch,
-    #[cfg_attr(feature = "serde-any", serde(rename = "file type mismatch"))]
+    #[serde(rename = "file type mismatch")]
     FileTypeMismatch { expected: String, got: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "extension mismatch"))]
+    #[serde(rename = "extension mismatch")]
     ExtensionMismatch,
-    #[cfg_attr(feature = "serde-any", serde(rename = "browser not allowed"))]
+    #[serde(rename = "browser not allowed")]
     BrowserNotAllowed,
-    #[cfg_attr(feature = "serde-any", serde(rename = "job not found"))]
+    #[serde(rename = "job not found")]
     JobNotFound,
 
     // gmt
-    #[cfg_attr(feature = "serde-any", serde(rename = "already created"))]
+    #[serde(rename = "already created")]
     AlreadyCreated,
-    #[cfg_attr(feature = "serde-any", serde(rename = "not created"))]
+    #[serde(rename = "not created")]
     NotCreated,
-    #[cfg_attr(feature = "serde-any", serde(rename = "too many profile details"))]
+    #[serde(rename = "too many profile details")]
     TooManyProfileDetails,
-    #[cfg_attr(feature = "serde-any", serde(rename = "exceeds maximum length"))]
+    #[serde(rename = "exceeds maximum length")]
     ExceedsMaximumLength,
-    #[cfg_attr(feature = "serde-any", serde(rename = "birth cake conflict"))]
+    #[serde(rename = "birth cake conflict")]
     BirthCakeConflict,
-    #[cfg_attr(feature = "serde-any", serde(rename = "invalid detail"))]
+    #[serde(rename = "invalid detail")]
     InvalidDetail { index: u8 },
-    #[cfg_attr(feature = "serde-any", serde(rename = "gmt only"))]
+    #[serde(rename = "gmt only")]
     GmtOnly,
-    #[cfg_attr(feature = "serde-any", serde(rename = "compile error"))]
+    #[serde(rename = "compile error")]
     CompileError { content: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "invalid compile request"))]
+    #[serde(rename = "invalid compile request")]
     InvalidCompileRequest,
 
-    #[cfg_attr(feature = "serde-any", serde(rename = "external"))]
+    #[serde(rename = "external")]
     External { content: String },
+    // #[serde(untagged)]
+    #[serde(rename = "any")]
+    Any { value: Box<dyn SerdeAny> },
 }
 
 impl Display for V1Error {
@@ -98,7 +99,6 @@ impl Display for V1Error {
 
 impl Error for V1Error {}
 
-#[cfg(feature = "restrait")]
 impl ErrorTrait for V1Error {
     fn external(e: Box<dyn Error>) -> Self {
         Self::External {
@@ -136,6 +136,8 @@ impl ErrorTrait for V1Error {
             Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
             Self::Cooldown { .. } => 429,
             Self::FsError { .. } | Self::External { .. } | Self::CompileError { .. } => 500,
+            Self::TimedOut => 503,
+            Self::Any { value } => value.exit_status(),
         }
     }
 }

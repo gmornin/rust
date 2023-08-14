@@ -2,14 +2,12 @@ use chrono::Datelike;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Default, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Serialize, Deserialize, Clone, Default, PartialEq, Eq, Debug)]
 pub struct ProfileCustomisable {
     pub description: String,
     pub details: Vec<ProfileDetail>,
 }
 
-#[cfg(feature = "profile-validate")]
 impl ProfileCustomisable {
     pub fn validate(&self) -> Result<(), Option<usize>> {
         if self.description.len() > 2000
@@ -39,29 +37,27 @@ impl ProfileCustomisable {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
+#[serde(tag = "type")]
 pub enum ProfileDetail {
-    #[cfg_attr(feature = "serde-any", serde(rename = "cake day"))]
+    #[serde(rename = "cake day")]
     CakeDay { value: CakeDayDetail },
-    #[cfg_attr(feature = "serde-any", serde(rename = "birthday"))]
+    #[serde(rename = "birthday")]
     BirthDay { value: BirthDayDetail },
-    #[cfg_attr(feature = "serde-any", serde(rename = "location"))]
+    #[serde(rename = "location")]
     Location { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "occupation"))]
+    #[serde(rename = "occupation")]
     Occupation { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "contact"))]
+    #[serde(rename = "contact")]
     Contact { value: ContactDetail },
-    #[cfg_attr(feature = "serde-any", serde(rename = "company"))]
+    #[serde(rename = "company")]
     Company { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "school"))]
+    #[serde(rename = "school")]
     School { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "education"))]
+    #[serde(rename = "education")]
     EducationLevel { value: String },
 }
 
-#[cfg(feature = "profile-validate")]
 impl ProfileDetail {
     pub fn validate(&self) -> bool {
         match self {
@@ -97,32 +93,27 @@ impl ProfileDetail {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
 pub struct CakeDayDetail {
     pub day: u8,
     pub month: u8,
 }
 
-#[cfg(feature = "profile-validate")]
 const DAY_IN_MONTH: [u8; 12] = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-#[cfg(feature = "profile-validate")]
 impl CakeDayDetail {
     pub fn validate(&self) -> bool {
         self.day <= DAY_IN_MONTH[self.month as usize - 1]
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
 pub struct BirthDayDetail {
     pub day: u8,
     pub month: u8,
     pub year: u16,
 }
 
-#[cfg(feature = "profile-validate")]
 impl BirthDayDetail {
     pub fn validate(&self) -> bool {
         if self.month == 2 && self.day == 29 && self.year % 4 != 0 {
@@ -138,40 +129,38 @@ impl BirthDayDetail {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
+#[serde(tag = "type")]
 pub enum ContactDetail {
-    #[cfg_attr(feature = "serde-any", serde(rename = "email"))]
+    #[serde(rename = "email")]
     Email { name: String, instance: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "matrix"))]
+    #[serde(rename = "matrix")]
     Matrix { name: String, instance: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "mastodon"))]
+    #[serde(rename = "mastodon")]
     Mastodon { name: String, instance: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "lemmy"))]
+    #[serde(rename = "lemmy")]
     Lemmy { name: String, instance: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "github"))]
+    #[serde(rename = "github")]
     Github { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "gitlab"))]
+    #[serde(rename = "gitlab")]
     Gitlab { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "bitbucket"))]
+    #[serde(rename = "bitbucket")]
     Bitbucket { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "reddit"))]
+    #[serde(rename = "reddit")]
     Reddit { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "discord"))]
+    #[serde(rename = "discord")]
     Discord { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "twitter"))]
+    #[serde(rename = "twitter")]
     Twitter { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "youtube"))]
+    #[serde(rename = "youtube")]
     Youtube { value: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "odysee"))]
+    #[serde(rename = "odysee")]
     Odysee { name: String, discriminator: u16 },
-    #[cfg_attr(feature = "serde-any", serde(rename = "website"))]
+    #[serde(rename = "website")]
     Website { value: String },
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
 pub struct ProfileAccount {
     pub id: i64,
     pub username: String,

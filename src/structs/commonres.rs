@@ -1,7 +1,10 @@
 use std::error::Error;
 use std::fmt::Display;
 
-use crate::services::v1::{V1Error, V1Response};
+use crate::{
+    services::v1::{V1Error, V1Response},
+    traits::SerdeAny,
+};
 
 #[derive(Debug)]
 pub enum CommonRes {
@@ -11,6 +14,30 @@ pub enum CommonRes {
 impl CommonRes {
     pub fn is_v1(&self) -> bool {
         matches!(self, Self::V1(_))
+    }
+
+    pub fn timedout(ver: &ApiVer) -> Self {
+        match ver {
+            ApiVer::V1 => Self::V1(Err(V1Error::TimedOut)),
+        }
+    }
+
+    pub fn external(s: String, ver: &ApiVer) -> Self {
+        match ver {
+            ApiVer::V1 => Self::V1(Err(V1Error::External { content: s })),
+        }
+    }
+
+    pub fn any(e: Box<dyn SerdeAny>, ver: &ApiVer) -> Self {
+        match ver {
+            ApiVer::V1 => Self::V1(Ok(V1Response::Any { value: e })),
+        }
+    }
+
+    pub fn any_err(e: Box<dyn SerdeAny>, ver: &ApiVer) -> Self {
+        match ver {
+            ApiVer::V1 => Self::V1(Err(V1Error::Any { value: e })),
+        }
     }
 }
 
@@ -40,4 +67,14 @@ impl Error for CommonResError {}
 
 pub enum ApiVer {
     V1,
+}
+
+#[macro_export]
+macro_rules! catch {
+    ($res:expr, $ver:expr) => {
+        match $res {
+            Ok(res) => res,
+            Err(e) => return CommonRes::external(e.to_string(), $ver),
+        }
+    };
 }

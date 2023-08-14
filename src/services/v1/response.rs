@@ -1,101 +1,96 @@
 use std::fmt::Debug;
 
-#[cfg(feature = "restrait")]
-use crate::traits::ResTrait;
 use crate::{
     structs::{ProfileAccount, ProfileCustomisable},
-    traits::{ErrorTrait, TaskRes},
+    traits::{ErrorTrait, ResTrait, SerdeAny},
 };
 
-use super::{Compiler, FromFormat, ToFormat, V1Error};
-#[cfg(feature = "serde-any")]
+use super::V1Error;
 use serde::*;
 
-#[cfg_attr(feature = "res-ser", derive(Serialize))]
-#[cfg_attr(feature = "res-de", derive(Deserialize))]
-#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(tag = "type")]
 pub enum V1Response {
     // account
-    #[cfg_attr(feature = "serde-any", serde(rename = "created"))]
+    #[serde(rename = "created")]
     Created { id: i64, token: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "deleted"))]
+    #[serde(rename = "deleted")]
     Deleted,
-    #[cfg_attr(feature = "serde-any", serde(rename = "login"))]
+    #[serde(rename = "login")]
     Login { id: i64, token: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "regenerated"))]
+    #[serde(rename = "regenerated")]
     RegenerateToken { token: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "renamed"))]
+    #[serde(rename = "renamed")]
     Renamed,
-    #[cfg_attr(feature = "serde-any", serde(rename = "email changed"))]
+    #[serde(rename = "email changed")]
     EmailChanged,
-    #[cfg_attr(feature = "serde-any", serde(rename = "password changed"))]
+    #[serde(rename = "password changed")]
     PasswordChanged,
-    #[cfg_attr(feature = "serde-any", serde(rename = "verification sent"))]
+    #[serde(rename = "verification sent")]
     VerificationSent,
-    #[cfg_attr(feature = "serde-any", serde(rename = "tree"))]
+    #[serde(rename = "tree")]
     Tree { content: V1DirTreeNode },
-    #[cfg_attr(feature = "serde-any", serde(rename = "jobs"))]
+    #[serde(rename = "jobs")]
     Jobs {
         current: Vec<V1Job>,
         queue: Vec<V1Job>,
     },
-    #[cfg_attr(feature = "serde-any", serde(rename = "unqueued"))]
+    #[serde(rename = "unqueued")]
     Unqueued,
 
     // trigger
-    #[cfg_attr(feature = "serde-any", serde(rename = "triggered"))]
+    #[serde(rename = "triggered")]
     Triggered,
-    #[cfg_attr(feature = "serde-any", serde(rename = "revoked"))]
+    #[serde(rename = "revoked")]
     Revoked,
 
     // storage
-    #[cfg_attr(feature = "serde-any", serde(rename = "overwritten"))]
+    #[serde(rename = "overwritten")]
     Overwritten,
-    #[cfg_attr(feature = "serde-any", serde(rename = "dir content"))]
+    #[serde(rename = "dir content")]
     DirContent { content: Vec<V1DirItem> },
-    #[cfg_attr(feature = "serde-any", serde(rename = "visibility changed"))]
+    #[serde(rename = "visibility changed")]
     VisibilityChanged,
-    #[cfg_attr(feature = "serde-any", serde(rename = "file item created"))]
+    #[serde(rename = "file item created")]
     FileItemCreated,
-    #[cfg_attr(feature = "serde-any", serde(rename = "file item deleted"))]
+    #[serde(rename = "file item deleted")]
     FileItemDeleted,
-    #[cfg_attr(feature = "serde-any", serde(rename = "copied"))]
+    #[serde(rename = "copied")]
     Copied,
-    #[cfg_attr(feature = "serde-any", serde(rename = "moved"))]
+    #[serde(rename = "moved")]
     Moved,
-    #[cfg_attr(feature = "serde-any", serde(rename = "exists"))]
+    #[serde(rename = "exists")]
     Exists { value: bool },
 
     // gmt
-    #[cfg_attr(feature = "serde-any", serde(rename = "service created"))]
+    #[serde(rename = "service created")]
     ServiceCreated,
-    #[cfg_attr(feature = "serde-any", serde(rename = "profile updated"))]
+    #[serde(rename = "profile updated")]
     ProfileUpdated,
-    #[cfg_attr(feature = "serde-any", serde(rename = "profile"))]
+    #[serde(rename = "profile")]
     Profile {
         profile: ProfileCustomisable,
         account: ProfileAccount,
     },
-    #[cfg_attr(feature = "serde-any", serde(rename = "profile-only"))]
+    #[serde(rename = "profile-only")]
     ProfileOnly { profile: ProfileCustomisable },
-    #[cfg_attr(feature = "serde-any", serde(rename = "pfp reset"))]
+    #[serde(rename = "pfp reset")]
     PfpReset,
-    #[cfg_attr(feature = "serde-any", serde(rename = "compiled"))]
-    Compiled { id: u64, newpath: String },
-    #[cfg_attr(feature = "serde-any", serde(rename = "tex published"))]
+    #[serde(rename = "compiled")]
+    TexCompiled { id: u64, newpath: String },
+    #[serde(rename = "tex published")]
     TexPublished { id: u64 },
-    #[cfg_attr(feature = "serde-any", serde(rename = "tex user publishes"))]
+    #[serde(rename = "tex user publishes")]
     TexUserPublishes { items: Vec<V1TexUserPublish> },
 
-    #[cfg_attr(feature = "serde-any", serde(rename = "nothing changed"))]
+    #[serde(rename = "nothing changed")]
     NothingChanged,
-    #[cfg_attr(feature = "serde-any", serde(rename = "error"))]
+    #[serde(rename = "error")]
     Error { kind: V1Error },
+    #[serde(rename = "any")]
+    Any { value: Box<dyn SerdeAny> },
 }
 
-#[cfg(feature = "restrait")]
 impl ResTrait for V1Response {
     type Error = V1Error;
 
@@ -130,20 +125,18 @@ impl ResTrait for V1Response {
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
-            | Self::Compiled { .. }
+            | Self::TexCompiled { .. }
             | Self::Copied { .. }
             | Self::TexPublished { .. }
             | Self::ServiceCreated => 201,
             Self::NothingChanged => 304,
             Self::Error { kind } => kind.status_code(),
+            Self::Any { value } => value.exit_status(),
         }
     }
 }
 
-#[cfg_attr(feature = "res-ser", derive(Serialize))]
-#[cfg_attr(feature = "res-de", derive(Deserialize))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1DirItem {
     pub visibility: V1Visibility,
     pub is_file: bool,
@@ -152,80 +145,61 @@ pub struct V1DirItem {
     pub size: u64,
 }
 
-#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
-#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1Visibility {
     pub inherited: bool,
     pub visibility: ItemVisibility,
 }
 
-#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
-#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize, Clone, Debug, Copy)]
 pub enum ItemVisibility {
-    #[cfg_attr(feature = "serde-any", serde(rename = "hidden"))]
+    #[serde(rename = "hidden")]
     Hidden,
-    #[cfg_attr(feature = "serde-any", serde(rename = "public"))]
+    #[serde(rename = "public")]
     Public,
-    #[cfg_attr(feature = "serde-any", serde(rename = "private"))]
+    #[serde(rename = "private")]
     Private,
 }
 
-#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
-#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1DirTreeNode {
     pub visibility: V1Visibility,
     pub name: String,
-    #[cfg_attr(feature = "serde-any", serde(flatten))]
+    #[serde(flatten)]
     pub content: V1DirTreeItem,
 }
 
-#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
-#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
-#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum V1DirTreeItem {
-    #[cfg_attr(feature = "serde-any", serde(rename = "file"))]
+    #[serde(rename = "file")]
     File { last_modified: u64, size: u64 },
-    #[cfg_attr(feature = "serde-any", serde(rename = "dir"))]
+    #[serde(rename = "dir")]
     Dir { content: Vec<V1DirTreeNode> },
 }
 
-#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
-#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1Job {
     pub id: u64,
-    #[cfg_attr(feature = "serde-any", serde(flatten))]
-    pub task: Box<dyn TaskRes>,
+    #[serde(flatten)]
+    pub task: Box<dyn SerdeAny>,
 }
 
-#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
-#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
-#[cfg_attr(feature = "serde-any", serde(tag = "type"))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone)]
-pub enum V1Task {
-    #[cfg_attr(feature = "serde-any", serde(rename = "compile"))]
-    Compile {
-        from: FromFormat,
-        to: ToFormat,
-        compiler: Compiler,
-        path: String,
-    },
-}
+// #[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize)]
+// #[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize)]
+// #[serde(tag = "type")]
+// #[cfg_attr(feature = "debug", derive(Debug)]
+// #[derive(Clone)]
+// pub enum V1Task {
+//     #[serde(rename = "compile")]
+//     Compile {
+//         from: FromFormat,
+//         to: ToFormat,
+//         compiler: Compiler,
+//         path: String,
+//     },
+// }
 
-#[cfg_attr(any(feature = "res-res", feature = "req-ser"), derive(Serialize))]
-#[cfg_attr(any(feature = "res-de", feature = "req-de"), derive(Deserialize))]
-#[cfg_attr(feature = "debug", derive(Debug))]
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1TexUserPublish {
     pub id: i64,
     pub published: u64,
