@@ -16,6 +16,17 @@ impl CommonRes {
         matches!(self, Self::V1(_))
     }
 
+    pub fn as_v1(self) -> Result<V1Response, V1Error> {
+        #[allow(irrefutable_let_patterns)]
+        if let Self::V1(res) = self {
+            res
+        } else {
+            Err(V1Error::External {
+                content: String::from("Not a V1 res (something's wrong with the code)"),
+            })
+        }
+    }
+
     pub fn timedout(ver: &ApiVer) -> Self {
         match ver {
             ApiVer::V1 => Self::V1(Err(V1Error::TimedOut)),
@@ -65,6 +76,7 @@ impl Display for CommonResError {
 
 impl Error for CommonResError {}
 
+#[derive(Clone, Copy)]
 pub enum ApiVer {
     V1,
 }
