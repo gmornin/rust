@@ -86,7 +86,8 @@ pub enum V1Error {
 
     #[serde(rename = "external")]
     External { content: String },
-    // #[serde(untagged)]
+    #[serde(rename = "feature disabled")]
+    FeatureDisabled,
     #[serde(rename = "any")]
     Any { value: Box<dyn SerdeAny> },
 }
@@ -119,6 +120,7 @@ impl ErrorTrait for V1Error {
             | Self::EmailMismatch
             | Self::PermissionDenied
             | Self::BrowserNotAllowed
+            | Self::FeatureDisabled
             | Self::GmtOnly => 403,
             Self::NoSuchUser
             | Self::TriggerNotFound

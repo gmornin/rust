@@ -82,6 +82,8 @@ pub enum V1Response {
     TexPublished { id: u64 },
     #[serde(rename = "tex user publishes")]
     TexUserPublishes { items: Vec<V1TexUserPublish> },
+    #[serde(rename = "tex user publish")]
+    TexUserPublish { value: V1SingleTexUserPublish },
 
     #[serde(rename = "nothing changed")]
     NothingChanged,
@@ -89,6 +91,15 @@ pub enum V1Response {
     Error { kind: V1Error },
     #[serde(rename = "any")]
     Any { value: Box<dyn SerdeAny> },
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1SingleTexUserPublish {
+    pub id: i64,
+    pub published: u64,
+    pub title: String,
+    pub desc: String,
+    pub ext: String,
 }
 
 impl ResTrait for V1Response {
@@ -122,6 +133,7 @@ impl ResTrait for V1Response {
             | Self::Exists { .. }
             | Self::Unqueued
             | Self::TexUserPublishes { .. }
+            | Self::TexUserPublish { .. }
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
