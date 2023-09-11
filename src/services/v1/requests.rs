@@ -99,8 +99,9 @@ pub struct V1Compile {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1ChangeEmail {
+    pub new: String,
     pub token: String,
-    pub email: String,
+    pub password: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -155,4 +156,10 @@ pub struct V1UpdatePublish {
     pub id: i64,
     pub title: String,
     pub desc: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1TokenPassword {
+    pub token: String,
+    pub password: String,
 }

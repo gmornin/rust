@@ -134,6 +134,7 @@ impl ResTrait for V1Response {
             | Self::Unqueued
             | Self::TexUserPublishes { .. }
             | Self::TexUserPublish { .. }
+            | Self::NothingChanged
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
@@ -141,7 +142,6 @@ impl ResTrait for V1Response {
             | Self::Copied { .. }
             | Self::TexPublished { .. }
             | Self::ServiceCreated => 201,
-            Self::NothingChanged => 304,
             Self::Error { kind } => kind.status_code(),
             Self::Any { value } => value.exit_status(),
         }
