@@ -39,6 +39,8 @@ pub enum V1Error {
     EmailMismatch,
     #[serde(rename = "trigger not found")]
     TriggerNotFound,
+    #[serde(rename = "trigger unpeakable")]
+    Unpeakable,
 
     // storage
     #[serde(rename = "path occupied")]
@@ -121,6 +123,7 @@ impl ErrorTrait for V1Error {
             | Self::PermissionDenied
             | Self::BrowserNotAllowed
             | Self::FeatureDisabled
+            | Self::Unpeakable
             | Self::GmtOnly => 403,
             Self::NoSuchUser
             | Self::TriggerNotFound

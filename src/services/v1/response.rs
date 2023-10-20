@@ -43,6 +43,8 @@ pub enum V1Response {
     Triggered,
     #[serde(rename = "revoked")]
     Revoked,
+    #[serde(rename = "trigger peek")]
+    TriggerPeek { value: Box<dyn SerdeAny> },
 
     // storage
     #[serde(rename = "overwritten")]
@@ -135,6 +137,7 @@ impl ResTrait for V1Response {
             | Self::TexUserPublishes { .. }
             | Self::TexUserPublish { .. }
             | Self::NothingChanged
+            | Self::TriggerPeek { .. }
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
