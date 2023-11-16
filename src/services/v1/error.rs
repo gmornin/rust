@@ -51,6 +51,8 @@ pub enum V1Error {
     FsError { content: String },
     #[serde(rename = "file too large")]
     FileTooLarge,
+    #[serde(rename = "storage full")]
+    StorageFull,
     #[serde(rename = "no parent")]
     NoParent,
     #[serde(rename = "permission denied")]
@@ -137,7 +139,7 @@ impl ErrorTrait for V1Error {
             | Self::TypeMismatch
             | Self::BirthCakeConflict
             | Self::AlreadyCreated => 409,
-            Self::FileTooLarge | Self::ExceedsMaximumLength => 413,
+            Self::StorageFull | Self::ExceedsMaximumLength | Self::FileTooLarge => 413,
             Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
             Self::Cooldown { .. } => 429,
             Self::FsError { .. } | Self::External { .. } | Self::CompileError { .. } => 500,

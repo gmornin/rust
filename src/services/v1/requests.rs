@@ -154,8 +154,7 @@ pub struct V1Publish {
 pub struct V1UpdatePublish {
     pub token: String,
     pub id: i64,
-    pub title: String,
-    pub desc: String,
+    pub path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

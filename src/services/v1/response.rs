@@ -13,7 +13,7 @@ use serde::*;
 pub enum V1Response {
     // account
     #[serde(rename = "created")]
-    Created { id: i64, token: String },
+    Created { id: i64, token: String, verify: bool },
     #[serde(rename = "deleted")]
     Deleted,
     #[serde(rename = "login")]
@@ -23,7 +23,7 @@ pub enum V1Response {
     #[serde(rename = "renamed")]
     Renamed,
     #[serde(rename = "email changed")]
-    EmailChanged,
+    EmailChanged { verify: bool },
     #[serde(rename = "password changed")]
     PasswordChanged,
     #[serde(rename = "verification sent")]
@@ -86,6 +86,8 @@ pub enum V1Response {
     TexUserPublishes { items: Vec<V1TexUserPublish> },
     #[serde(rename = "tex user publish")]
     TexUserPublish { value: V1SingleTexUserPublish },
+    #[serde(rename = "tex publish updated")]
+    TexPublishUpdated,
 
     #[serde(rename = "nothing changed")]
     NothingChanged,
@@ -118,7 +120,7 @@ impl ResTrait for V1Response {
             | Self::Jobs { .. }
             | Self::RegenerateToken { .. }
             | Self::Renamed
-            | Self::EmailChanged
+            | Self::EmailChanged { .. }
             | Self::Deleted
             | Self::Triggered
             | Self::Revoked
@@ -138,6 +140,7 @@ impl ResTrait for V1Response {
             | Self::TexUserPublish { .. }
             | Self::NothingChanged
             | Self::TriggerPeek { .. }
+            | Self::TexPublishUpdated
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }
