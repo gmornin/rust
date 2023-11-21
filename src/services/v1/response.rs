@@ -13,23 +13,36 @@ use serde::*;
 pub enum V1Response {
     // account
     #[serde(rename = "created")]
-    Created { id: i64, token: String, verify: bool },
+    Created {
+        id: i64,
+        token: String,
+        verify: bool,
+    },
     #[serde(rename = "deleted")]
     Deleted,
     #[serde(rename = "login")]
-    Login { id: i64, token: String },
+    Login {
+        id: i64,
+        token: String,
+    },
     #[serde(rename = "regenerated")]
-    RegenerateToken { token: String },
+    RegenerateToken {
+        token: String,
+    },
     #[serde(rename = "renamed")]
     Renamed,
     #[serde(rename = "email changed")]
-    EmailChanged { verify: bool },
+    EmailChanged {
+        verify: bool,
+    },
     #[serde(rename = "password changed")]
     PasswordChanged,
     #[serde(rename = "verification sent")]
     VerificationSent,
     #[serde(rename = "tree")]
-    Tree { content: V1DirTreeNode },
+    Tree {
+        content: V1DirTreeNode,
+    },
     #[serde(rename = "jobs")]
     Jobs {
         current: Vec<V1Job>,
@@ -44,13 +57,17 @@ pub enum V1Response {
     #[serde(rename = "revoked")]
     Revoked,
     #[serde(rename = "trigger peek")]
-    TriggerPeek { value: Box<dyn SerdeAny> },
+    TriggerPeek {
+        value: Box<dyn SerdeAny>,
+    },
 
     // storage
     #[serde(rename = "overwritten")]
     Overwritten,
     #[serde(rename = "dir content")]
-    DirContent { content: Vec<V1DirItem> },
+    DirContent {
+        content: Vec<V1DirItem>,
+    },
     #[serde(rename = "visibility changed")]
     VisibilityChanged,
     #[serde(rename = "file item created")]
@@ -62,7 +79,9 @@ pub enum V1Response {
     #[serde(rename = "moved")]
     Moved,
     #[serde(rename = "exists")]
-    Exists { value: bool },
+    Exists {
+        value: bool,
+    },
 
     // gmt
     #[serde(rename = "service created")]
@@ -75,26 +94,44 @@ pub enum V1Response {
         account: ProfileAccount,
     },
     #[serde(rename = "profile-only")]
-    ProfileOnly { profile: ProfileCustomisable },
+    ProfileOnly {
+        profile: ProfileCustomisable,
+    },
     #[serde(rename = "pfp reset")]
     PfpReset,
     #[serde(rename = "compiled")]
-    TexCompiled { id: u64, newpath: String },
+    TexCompiled {
+        id: u64,
+        newpath: String,
+    },
     #[serde(rename = "tex published")]
-    TexPublished { id: u64 },
+    TexPublished {
+        id: u64,
+    },
     #[serde(rename = "tex user publishes")]
-    TexUserPublishes { items: Vec<V1TexUserPublish> },
+    TexUserPublishes {
+        items: Vec<V1TexUserPublish>,
+    },
     #[serde(rename = "tex user publish")]
-    TexUserPublish { value: V1SingleTexUserPublish },
+    TexUserPublish {
+        value: V1SingleTexUserPublish,
+    },
     #[serde(rename = "tex publish updated")]
     TexPublishUpdated,
 
+    Multi {
+        res: Vec<Self>,
+    },
     #[serde(rename = "nothing changed")]
     NothingChanged,
     #[serde(rename = "error")]
-    Error { kind: V1Error },
+    Error {
+        kind: V1Error,
+    },
     #[serde(rename = "any")]
-    Any { value: Box<dyn SerdeAny> },
+    Any {
+        value: Box<dyn SerdeAny>,
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -150,6 +187,16 @@ impl ResTrait for V1Response {
             | Self::ServiceCreated => 201,
             Self::Error { kind } => kind.status_code(),
             Self::Any { value } => value.exit_status(),
+            Self::Multi { res } => res
+                .iter()
+                .find_map(|res| match res {
+                    Self::Error { kind } => Some(kind.status_code()),
+                    _ => None,
+                })
+                .unwrap_or_else(|| match res.first() {
+                    Some(res) => res.status_code(),
+                    None => 200,
+                }),
         }
     }
 }

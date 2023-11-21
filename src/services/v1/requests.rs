@@ -66,6 +66,12 @@ pub struct V1PathOnly {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1MulpiplePaths {
+    pub token: String,
+    pub paths: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1PathVisibility {
     pub token: String,
     pub path: String,
