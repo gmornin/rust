@@ -87,7 +87,7 @@ pub enum V1Response {
     #[serde(rename = "tex published")]
     TexPublished { id: u64 },
     #[serde(rename = "tex user publishes")]
-    TexUserPublishes { items: Vec<V1TexUserPublish> },
+    TexUserPublishes { items: Vec<V1TexUserPublish>, total: u64, continuation: bool },
     #[serde(rename = "tex user publish")]
     TexUserPublish { value: V1SingleTexUserPublish },
     #[serde(rename = "tex publish updated")]
