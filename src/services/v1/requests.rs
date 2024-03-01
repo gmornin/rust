@@ -140,6 +140,10 @@ pub enum Compiler {
     PulldownCmark,
     #[serde(rename = "pdflatex")]
     Pdflatex,
+    #[serde(rename = "lualatex")]
+    Lualatex,
+    #[serde(rename = "xelatex")]
+    Xelatex,
 }
 
 impl Default for Compiler {
