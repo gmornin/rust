@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "1", features = ["derive"] }
-chrono = "0.4"
+serde = { version = "1", default-features = false }
+chrono = { version = "0.4", features = ["clock"], default-features = false }
 dyn-clone = "1"
 typetag = "0.2"
 
