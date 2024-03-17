@@ -93,7 +93,10 @@ pub enum V1Response {
         continuation: bool,
     },
     #[serde(rename = "tex user publish")]
-    TexUserPublish { value: V1SingleTexUserPublish },
+    TexUserPublish {
+        #[serde(flatten)]
+        value: V1SingleTexUserPublish,
+    },
     #[serde(rename = "tex publish updated")]
     TexPublishUpdated,
 
