@@ -15,6 +15,8 @@ pub enum V1Error {
     UsernameTaken,
     #[serde(rename = "email taken")]
     EmailTaken,
+    #[serde(rename = "blacklisted")]
+    Blacklisted,
     #[serde(rename = "no such user")]
     NoSuchUser,
     #[serde(rename = "password incorrect")]
@@ -141,7 +143,7 @@ impl ErrorTrait for V1Error {
             | Self::AlreadyCreated => 409,
             Self::StorageFull | Self::ExceedsMaximumLength | Self::FileTooLarge => 413,
             Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
-            Self::Cooldown { .. } => 429,
+            Self::Cooldown { .. } | Self::Blacklisted => 429,
             Self::FsError { .. } | Self::External { .. } | Self::CompileError { .. } => 500,
             Self::TimedOut => 503,
             Self::Any { value } => value.exit_status(),
