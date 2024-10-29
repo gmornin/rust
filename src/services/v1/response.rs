@@ -20,6 +20,12 @@ pub enum V1Response {
     },
     #[serde(rename = "deleted")]
     Deleted,
+    #[serde(rename = "allowed")]
+    Allowed,
+    #[serde(rename = "disallowed")]
+    Disallowed,
+    #[serde(rename = "access")]
+    Access { users: Vec<V1SimpleUser> },
     #[serde(rename = "login")]
     Login { id: i64, token: String },
     #[serde(rename = "regenerated")]
@@ -111,6 +117,12 @@ pub enum V1Response {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1SimpleUser {
+    pub id: i64,
+    pub username: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1SingleTexUserPublish {
     pub id: i64,
     pub published: u64,
@@ -154,6 +166,9 @@ impl ResTrait for V1Response {
             | Self::NothingChanged
             | Self::TriggerPeek { .. }
             | Self::TexPublishUpdated
+            | Self::Allowed
+            | Self::Disallowed
+            | Self::Access { .. }
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }

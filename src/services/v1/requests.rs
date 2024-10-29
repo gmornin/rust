@@ -17,6 +17,12 @@ pub struct V1TokenOnly {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1TokenAccessType {
+    pub token: String,
+    pub access_type: AccessType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1PasswordId {
     pub identifier: String,
     #[serde(rename = "identifier-type")]
@@ -171,4 +177,20 @@ pub struct V1UpdatePublish {
 pub struct V1TokenPassword {
     pub token: String,
     pub password: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1Access {
+    pub token: String,
+    pub identifier: String,
+    #[serde(rename = "identifier-type")]
+    pub identifier_type: V1IdentifierType,
+    #[serde(rename = "type")]
+    pub r#type: AccessType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Hash, Copy, PartialEq, Eq)]
+pub enum AccessType {
+    #[serde(rename = "file")]
+    File,
 }
