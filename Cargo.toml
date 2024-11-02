@@ -13,3 +13,5 @@ typetag = "0.2"
 
 [features]
 default = []
+tex = []
+blue = []

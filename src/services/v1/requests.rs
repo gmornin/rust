@@ -100,6 +100,7 @@ pub struct V1ProfileOnly {
     pub profile: ProfileCustomisable,
 }
 
+#[cfg(feature = "tex")]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1Compile {
     pub token: String,
@@ -122,6 +123,7 @@ pub struct V1Unqueue {
     pub id: u64,
 }
 
+#[cfg(feature = "tex")]
 #[derive(Serialize, Deserialize, Clone, Debug, Copy)]
 pub enum FromFormat {
     #[serde(rename = "markdown")]
@@ -130,6 +132,7 @@ pub enum FromFormat {
     Latex,
 }
 
+#[cfg(feature = "tex")]
 #[derive(Serialize, Deserialize, Clone, Debug, Copy)]
 pub enum ToFormat {
     #[serde(rename = "html")]
@@ -138,6 +141,7 @@ pub enum ToFormat {
     Pdf,
 }
 
+#[cfg(feature = "tex")]
 #[derive(Serialize, Deserialize, Clone, Debug, Copy)]
 pub enum Compiler {
     #[serde(rename = "default")]
@@ -152,12 +156,14 @@ pub enum Compiler {
     Xelatex,
 }
 
+#[cfg(feature = "tex")]
 impl Default for Compiler {
     fn default() -> Self {
         Self::Default
     }
 }
 
+#[cfg(feature = "tex")]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1Publish {
     pub token: String,
@@ -166,6 +172,7 @@ pub struct V1Publish {
     pub desc: String,
 }
 
+#[cfg(feature = "tex")]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1UpdatePublish {
     pub token: String,
@@ -193,4 +200,12 @@ pub struct V1Access {
 pub enum AccessType {
     #[serde(rename = "file")]
     File,
+}
+
+impl AccessType {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::File => "file",
+        }
+    }
 }

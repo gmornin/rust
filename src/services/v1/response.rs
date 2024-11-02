@@ -106,6 +106,9 @@ pub enum V1Response {
     #[serde(rename = "tex publish updated")]
     TexPublishUpdated,
 
+    #[serde(rename = "allowed access")]
+    AllowedAccess { users: Vec<V1SimpleUser> },
+
     #[serde(rename = "multi")]
     Multi { res: Vec<Self> },
     #[serde(rename = "nothing changed")]
@@ -169,6 +172,7 @@ impl ResTrait for V1Response {
             | Self::Allowed
             | Self::Disallowed
             | Self::Access { .. }
+            | Self::AllowedAccess { .. }
             | Self::ProfileOnly { .. } => 200,
             Self::Created { .. }
             | Self::FileItemCreated { .. }

@@ -70,11 +70,11 @@ pub enum V1Error {
     #[serde(rename = "job not found")]
     JobNotFound,
 
-    // gmt
     #[serde(rename = "already created")]
     AlreadyCreated,
     #[serde(rename = "not created")]
     NotCreated,
+
     #[serde(rename = "too many profile details")]
     TooManyProfileDetails,
     #[serde(rename = "exceeds maximum length")]
@@ -83,10 +83,15 @@ pub enum V1Error {
     BirthCakeConflict,
     #[serde(rename = "invalid detail")]
     InvalidDetail { index: u8 },
+
+    // gmt
+    #[cfg(feature = "tex")]
     #[serde(rename = "gmt only")]
     GmtOnly,
+    #[cfg(feature = "tex")]
     #[serde(rename = "compile error")]
     CompileError { content: String },
+    #[cfg(feature = "tex")]
     #[serde(rename = "invalid compile request")]
     InvalidCompileRequest,
 
@@ -118,17 +123,19 @@ impl ErrorTrait for V1Error {
             Self::NoParent
             | Self::InvalidUsername
             | Self::TooManyProfileDetails
-            | Self::InvalidCompileRequest
-            | Self::AlreadyVerified
-            | Self::InvalidDetail { .. } => 400,
+            | Self::InvalidDetail { .. }
+            | Self::AlreadyVerified => 400,
+            #[cfg(feature = "tex")]
+            Self::InvalidCompileRequest => 400,
             Self::PasswordIncorrect | Self::InvalidToken => 401,
             Self::NotVerified
             | Self::EmailMismatch
             | Self::PermissionDenied
             | Self::BrowserNotAllowed
             | Self::FeatureDisabled
-            | Self::Unpeakable
-            | Self::GmtOnly => 403,
+            | Self::Unpeakable => 403,
+            #[cfg(feature = "tex")]
+            Self::GmtOnly => 403,
             Self::NoSuchUser
             | Self::TriggerNotFound
             | Self::FileNotFound
@@ -144,7 +151,9 @@ impl ErrorTrait for V1Error {
             Self::StorageFull | Self::ExceedsMaximumLength | Self::FileTooLarge => 413,
             Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
             Self::Cooldown { .. } | Self::Blacklisted => 429,
-            Self::FsError { .. } | Self::External { .. } | Self::CompileError { .. } => 500,
+            Self::FsError { .. } | Self::External { .. } => 500,
+            #[cfg(feature = "tex")]
+            Self::CompileError { .. } => 500,
             Self::TimedOut => 503,
             Self::Any { value } => value.exit_status(),
         }
