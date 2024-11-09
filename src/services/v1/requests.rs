@@ -23,6 +23,15 @@ pub struct V1TokenAccessType {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1TokenAccessTypeOptionIdentifier {
+    pub token: String,
+    pub access_type: AccessType,
+    pub identifier: Option<String>,
+    #[serde(rename = "identifier-type")]
+    pub identifier_type: Option<V1IdentifierType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1PasswordId {
     pub identifier: String,
     #[serde(rename = "identifier-type")]
@@ -200,12 +209,15 @@ pub struct V1Access {
 pub enum AccessType {
     #[serde(rename = "file")]
     File,
+    #[serde(rename = "access")]
+    Access,
 }
 
 impl AccessType {
     pub fn as_str(&self) -> &str {
         match self {
             Self::File => "file",
+            Self::Access => "access",
         }
     }
 }
