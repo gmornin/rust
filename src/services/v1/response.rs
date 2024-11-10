@@ -26,6 +26,9 @@ pub enum V1Response {
     Disallowed,
     #[serde(rename = "access")]
     Access { users: Vec<V1SimpleUser> },
+    #[serde(rename = "allowed access")]
+    AllowedAccess { users: Vec<V1SimpleUser> },
+
     #[serde(rename = "login")]
     Login { id: i64, token: String },
     #[serde(rename = "regenerated")]
@@ -106,8 +109,11 @@ pub enum V1Response {
     #[serde(rename = "tex publish updated")]
     TexPublishUpdated,
 
-    #[serde(rename = "allowed access")]
-    AllowedAccess { users: Vec<V1SimpleUser> },
+    // blue
+    #[serde(rename = "within map")]
+    WithinMap { redirect: String },
+    #[serde(rename = "rendered")]
+    BlueRendered { id: u64, newpath: String },
 
     #[serde(rename = "multi")]
     Multi { res: Vec<Self> },
@@ -179,7 +185,9 @@ impl ResTrait for V1Response {
             | Self::TexCompiled { .. }
             | Self::Copied { .. }
             | Self::TexPublished { .. }
+            | Self::BlueRendered { .. }
             | Self::ServiceCreated => 201,
+            Self::WithinMap { .. } => 303,
             Self::Error { kind } => kind.status_code(),
             Self::Any { value } => value.exit_status(),
             Self::Multi { res } => res
