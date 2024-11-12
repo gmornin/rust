@@ -229,16 +229,4 @@ pub struct V1Render {
     pub from: String,
     pub to: String,
     pub preset: String,
-    pub dimension: Dimension,
-}
-
-#[cfg(feature = "blue")]
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub enum Dimension {
-    #[serde(rename = "overworld")]
-    Overworld,
-    #[serde(rename = "nether")]
-    Nether,
-    #[serde(rename = "end")]
-    End,
 }

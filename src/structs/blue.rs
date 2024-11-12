@@ -1,13 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{services::v1::Dimension, traits::SerdeAny};
+use crate::traits::SerdeAny;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BlueRenderDisplay {
     pub from: String,
     pub to: String,
     pub preset: String,
-    pub dimension: Dimension,
 }
 
 #[typetag::serde(name = "blue render")]

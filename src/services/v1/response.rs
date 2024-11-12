@@ -114,6 +114,8 @@ pub enum V1Response {
     WithinMap { redirect: String },
     #[serde(rename = "rendered")]
     BlueRendered { id: u64, newpath: String },
+    #[serde(rename = "blue presets")]
+    BluePresets { default: String, all: Vec<String> },
 
     #[serde(rename = "multi")]
     Multi { res: Vec<Self> },
@@ -187,6 +189,7 @@ impl ResTrait for V1Response {
             | Self::TexPublished { .. }
             | Self::BlueRendered { .. }
             | Self::ServiceCreated => 201,
+            Self::BluePresets { .. } => 200,
             Self::WithinMap { .. } => 303,
             Self::Error { kind } => kind.status_code(),
             Self::Any { value } => value.exit_status(),
