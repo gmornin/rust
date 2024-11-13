@@ -69,6 +69,8 @@ pub enum V1Error {
     BrowserNotAllowed,
     #[serde(rename = "job not found")]
     JobNotFound,
+    #[serde(rename = "queue full")]
+    QueueFull,
 
     #[serde(rename = "already created")]
     AlreadyCreated,
@@ -150,7 +152,7 @@ impl ErrorTrait for V1Error {
             | Self::AlreadyCreated => 409,
             Self::StorageFull | Self::ExceedsMaximumLength | Self::FileTooLarge => 413,
             Self::FileTypeMismatch { .. } | Self::ExtensionMismatch => 415,
-            Self::Cooldown { .. } | Self::Blacklisted => 429,
+            Self::Cooldown { .. } | Self::Blacklisted | Self::QueueFull => 429,
             Self::FsError { .. } | Self::External { .. } => 500,
             #[cfg(feature = "tex")]
             Self::CompileError { .. } => 500,
