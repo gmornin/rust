@@ -28,6 +28,8 @@ pub enum V1Response {
     Access { users: Vec<V1SimpleUser> },
     #[serde(rename = "allowed access")]
     AllowedAccess { users: Vec<V1SimpleUser> },
+    #[serde(rename = "invited")]
+    Invited { code: String },
 
     #[serde(rename = "login")]
     Login { id: i64, token: String },
@@ -188,6 +190,7 @@ impl ResTrait for V1Response {
             | Self::Copied { .. }
             | Self::TexPublished { .. }
             | Self::BlueRendered { .. }
+            | Self::Invited { .. }
             | Self::ServiceCreated => 201,
             Self::BluePresets { .. } => 200,
             Self::WithinMap { .. } => 303,

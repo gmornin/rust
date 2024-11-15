@@ -10,6 +10,8 @@ pub enum ServicesTriggerTypes {
         username: String,
         id: i64,
     },
+    #[serde(rename = "invite")]
+    Invite,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

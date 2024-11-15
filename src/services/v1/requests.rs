@@ -23,6 +23,14 @@ pub struct V1TokenAccessType {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct V1TokenIdentifier {
+    pub token: String,
+    pub identifier: String,
+    #[serde(rename = "identifier-type")]
+    pub identifier_type: V1IdentifierType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct V1TokenAccessTypeOptionIdentifier {
     pub token: String,
     pub access_type: AccessType,
